@@ -1,0 +1,440 @@
+@layer long-text {
+
+    //
+    @property --scroll-left   { initial-value: 0; syntax: "<number>"; inherits: true; };
+    @property --scroll-top    { initial-value: 0; syntax: "<number>"; inherits: true; };
+    @property --scroll-width  { initial-value: 0; syntax: "<number>"; inherits: true; };
+    @property --scroll-height { initial-value: 0; syntax: "<number>"; inherits: true; };
+    @property --offset-width  { initial-value: 0; syntax: "<number>"; inherits: true; };
+    @property --offset-height { initial-value: 0; syntax: "<number>"; inherits: true; };
+
+    //
+    @property --size-coef-x { initial-value: 0; syntax: "<number>"; inherits: true; };
+    @property --size-coef-y { initial-value: 0; syntax: "<number>"; inherits: true; };
+
+    //
+    @property --percent-x { initial-value: 0; syntax: "<number>"; inherits: true; };
+    @property --percent-y { initial-value: 0; syntax: "<number>"; inherits: true; };
+
+    //
+    @keyframes by-scroll-x {
+        0%   { --percent-x: 0.0; }
+        100% { --percent-x: 1.0; }
+    };
+
+    //
+    @keyframes scroll-side {
+        0% {
+            mask-image: linear-gradient(to left, black, white 1rem);
+        }
+
+        1% {
+            mask-image:
+                linear-gradient(to left, black, white 1rem),
+                linear-gradient(to right, black, white 1rem);
+        }
+
+        99% {
+            mask-image:
+                linear-gradient(to left, black, white 1rem),
+                linear-gradient(to right, black, white 1rem);
+        }
+
+        100% {
+            mask-image: linear-gradient(to right, black, white 1rem);
+        }
+    };
+
+    //
+    *[inert] {
+        pointer-events: none !important;
+    }
+
+    //
+    x-focustext, x-longtext {
+        & {
+            --size-coef-x: clamp(0, calc(var(--offset-width)  / var(--scroll-width) ), 1);
+            --size-coef-y: clamp(0, calc(var(--offset-height) / var(--scroll-height)), 1);
+        }
+
+        // decoration...
+        //& { outline: solid 1px gray; };
+
+        //
+        & {
+            transform: none;
+            translate: 0px 0px;
+            scale: 1;
+        }
+
+        //
+        & {
+            inset: 0px;
+
+            //
+            max-inline-size: 100%;
+            inline-size: max-content;
+            min-block-size: 1ch;
+            max-block-size: 100%;
+            block-size: max-content;
+            min-inline-size: 100%;
+            box-sizing: border-box;
+
+            //
+            place-content: center;
+            place-items: center;
+            overflow: hidden;
+
+            //
+            display: grid !important;
+            grid-template-columns:
+                [input] minmax(0px, 1fr)
+                [button] minmax(0px, max-content);
+            grid-template-rows:
+                [input] minmax(0px, 1fr)
+                [scroll] minmax(0px, 0.5rem);
+
+            //
+            overflow-anchor: auto;
+
+            //
+            -webkit-user-drag: none;
+            -moz-user-drag: none;
+            user-drag: none;
+
+            //
+            white-space: nowrap;
+            text-overflow: clip;
+            word-break: keep-all;
+            word-wrap: normal;
+            flex-wrap: nowrap;
+
+            //
+            user-select: none;
+
+            //
+            timeline-scope: --axis-scroll-x;
+        }
+
+        //
+        .lucide {
+            contain-intrinsic-size: 24px 24px;
+            aspect-ratio: 1 / 1;
+            inline-size: max-content;
+            block-size: 100%;
+            stroke: currentColor;
+            user-select: none;
+            touch-action: none;
+            pointer-events: none;
+        }
+
+        //
+        input {
+            inset: 0px;
+            user-select: auto;
+            //user-select: all;
+            overflow: hidden;
+
+            //
+            pointer-events: auto;
+            //pointer-events: none;
+
+            //
+            display: inline;
+            flex-direction: row;
+            place-content: center;
+            place-items: center;
+
+            //
+            text-align: start;
+            justify-items: start;
+
+            //
+            stroke: currentColor;
+            overflow-anchor: auto;
+
+            //
+            container-type: normal;
+            contain: none;
+
+            // IMPORTANT!
+            field-sizing: content;
+
+            //
+            font-stretch: ultra-condensed;
+            letter-spacing: -1px;
+            font-size: 0.9rem;
+            font-weight: normal;
+            font-family:
+                "Fira Code",
+                "Consolas",
+                "Segoe UI Mono",
+                "Fira Mono",
+                "Droid Sans Mono",
+                "Roboto Mono",
+                "Oxygen Mono",
+                "Ubuntu Mono",
+                "Cascadia Mono",
+                "Source Code Pro",
+                "Courier New",
+                Menlo, Monaco,
+                ui-monospace, monospace;
+
+            //
+            background-color: transparent;
+            block-size: max-content;
+            min-inline-size: 100%;
+            inline-size: max-content;
+            max-inline-size: none;
+            max-block-size: 100%;
+            min-block-size: 1ch;
+            touch-action: manipulation;
+            box-sizing: border-box;
+
+            //
+            outline: none 0px transparent;
+            border: none 0px transparent;
+            margin: 0px;
+
+            //
+            -webkit-user-drag: none;
+            -moz-user-drag: none;
+            user-drag: none;
+
+            //
+            white-space: nowrap;
+            text-overflow: clip;
+            word-break: keep-all;
+            word-wrap: normal;
+            flex-wrap: nowrap;
+
+            //
+            &[readonly], &[disabled], &[inert], &:read-only, &:disabled {
+                user-select: none;
+                pointer-events: none;
+            }
+        };
+
+        //
+        .ux-input-box {
+            //place-self: start;
+            inset: 0px;
+
+            //
+            scroll-timeline-name: --axis-scroll-x;
+            scroll-timeline-axis: inline;
+
+            //
+            cursor: text;
+
+            //
+            display: block;
+            padding: 0.5rem;
+            contain: content;
+
+            //
+            container-type: inline-size;
+
+            //
+            block-size: max-content;
+            min-inline-size: 100%;
+            inline-size: 100%;
+            max-inline-size: 100%;
+            max-block-size: 100%;
+            min-block-size: 1ch;
+            box-sizing: border-box;
+
+            //
+            overflow-y: hidden;
+            overflow-x: auto;
+            overflow-anchor: auto;
+            overflow-block: hidden;
+            overflow-inline: auto;
+
+            //
+            scrollbar-width: none;
+            scrollbar-gutter: stable;
+            scroll-behavior: smooth;
+            touch-action: pan-x;
+
+            //
+            pointer-events: auto;
+
+            //
+            grid-column: input;
+            grid-row: 1 / 2 span;
+
+            //
+            white-space: nowrap;
+            text-overflow: clip;
+            word-break: keep-all;
+            word-wrap: normal;
+            flex-wrap: nowrap;
+
+            //
+            -webkit-user-drag: none;
+            -moz-user-drag: none;
+            user-drag: none;
+
+            //
+            user-select: none;
+            background-color: transparent;
+            mask-mode: luminance;
+            mask-composite: intersect;
+            //
+            //scroll-snap-type: x proximity;
+            //scroll-snap-align: center;
+
+            //
+            &:has(*::selection) {
+                overflow-x: hidden !important;
+            }
+
+            //
+            @supports (animation-timeline: scroll()) {
+                & {
+                    //background-image: linear-gradient(to left, #00000070, #00000070 1rem, transparent 1rem);
+                    //scroll-timeline: --visible inline;
+                    transition-behavior: allow-discrete;
+                    animation-name: scroll-side;
+                    animation-timeline: --axis-scroll-x;
+                    animation-range: contain;
+                    animation-fill-mode: both;
+                    animation-timing-function: linear;
+                    animation-duration: 1ms;
+                }
+            }
+        }
+
+        //
+        .ux-button-box {
+            grid-column: button;
+            grid-row: 1 / 2 span;
+
+            inline-size: 100%;
+            block-size: 100%;
+
+            user-select: none;
+            touch-action: none;
+            pointer-events: none;
+
+            //
+            inset: 0px;
+
+            //
+            button {
+                //
+                outline: none 0px transparent;
+                border: none 0px transparent;
+                margin: 0px;
+
+                //
+                padding: 1rem;
+                aspect-ratio: 1 / 1;
+                inline-size: max-content;
+                block-size: 100%;
+
+                //
+                cursor: pointer;
+
+                //
+                user-select: none;
+                touch-action: none;
+                pointer-events: auto;
+            }
+        }
+
+        //
+        .ux-scroll-box {
+            & {
+                transform: none;
+                container-type: size;
+                contain: content;
+                position: relative;
+
+                //
+                grid-column: 1 / 1 span;
+                grid-row: scroll;
+                inline-size: 100%;
+                block-size: 100%;
+
+                user-select: none;
+                touch-action: none;
+                pointer-events: none;
+
+                //
+                place-self: start start;
+                place-content: center start;
+                place-items: center start;
+                inset: 0px;
+            }
+
+            //
+            &.hidden {
+                display: none;
+                visibility: collapse;
+                opacity: 0;
+            }
+
+            //
+            .ux-scroll-bar {
+                //
+                transform: none;
+                place-self: start start;
+                inset: 0px;
+
+                //
+                animation-name: by-scroll-x;
+                animation-timeline: --axis-scroll-x;
+                animation-timing-function: linear;
+                animation-fill-mode: both;
+                animation-duration: 1ms;
+                animation-range: contain;
+                cursor: pointer;
+
+                //
+                inline-size: calc(100% * var(--size-coef-x));
+                block-size: 100%;
+                //background-color: gray;
+
+                //
+                user-select: none;
+                touch-action: none;
+                pointer-events: auto;
+
+                //
+                translate: calc(var(--scroll-left) * var(--size-coef-x) * 1px) 0px !important;
+                @supports(timeline-scope: --axis-scroll-x) {
+                    translate: calc(var(--percent-x) * (1 - var(--size-coef-x)) * 100cqi) 0px !important;
+                }
+            }
+        }
+
+        //
+        &:is(x-focustext) {
+            & {
+                position: fixed;
+                z-index : 9999999;
+                inset   : auto;
+                inset-block-end: 0px;
+                inset-inline-start: 0px;
+                inline-size: 100%;
+                max-inline-size: 100%;
+                overflow-anchor: none;
+                box-shadow: 0px 0px 1rem 1px #00000070;
+            }
+
+            //
+            & { inset-block-end: calc(min(env(keyboard-inset-bottom, 0px), env(keyboard-inset-height, 0px)) / var(--zoom, 1)); }
+
+            //
+            input {
+                font-size: 1.4rem;
+                overflow-anchor: none;
+                user-select: auto;
+                font-weight: bold;
+            }
+        }
+    }
+
+}

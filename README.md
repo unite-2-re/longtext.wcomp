@@ -1,2 +1,1 @@
-# longtext.wcomp
-Long text web-input
+# LongText Web Component
