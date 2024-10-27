@@ -90,12 +90,12 @@ class Scrollable {
             this.#scrollable?.parentElement?.style.setProperty("--offset-width" , "" + this.#scrollable.offsetWidth , "");
             this.#scrollable?.parentElement?.style.setProperty("--offset-height", "" + this.#scrollable.offsetHeight, "");
             if ((this.#scrollable?.offsetWidth || 0) >= (this.#scrollable?.scrollWidth || 0)) {
-                if (!this.#scrollable?.parentElement?.querySelector(".ux-scroll-box")?.classList?.contains?.("hidden")) {
-                    this.#scrollable?.parentElement?.querySelector(".ux-scroll-box")?.classList?.add?.("hidden");
+                if (!this.#scrollable?.parentElement?.querySelector(".u2-scroll-box")?.classList?.contains?.("hidden")) {
+                    this.#scrollable?.parentElement?.querySelector(".u2-scroll-box")?.classList?.add?.("hidden");
                 }
             } else {
-                if (this.#scrollable?.parentElement?.querySelector(".ux-scroll-box")?.classList?.contains?.("hidden")) {
-                    this.#scrollable?.parentElement?.querySelector(".ux-scroll-box")?.classList?.remove?.("hidden");
+                if (this.#scrollable?.parentElement?.querySelector(".u2-scroll-box")?.classList?.contains?.("hidden")) {
+                    this.#scrollable?.parentElement?.querySelector(".u2-scroll-box")?.classList?.remove?.("hidden");
                 }
             }
         }
@@ -137,14 +137,14 @@ class Scrollable {
         });
 
         //
-        this.#scrollable.parentElement?.querySelector(".ux-scroll-bar")?.
+        this.#scrollable.parentElement?.querySelector(".u2-scroll-bar")?.
             addEventListener?.("dragstart", (ev)=>{
                 ev?.preventDefault?.();
                 ev?.stopPropagation?.();
             });
 
         //
-        this.#scrollable.parentElement?.querySelector(".ux-scroll-bar")?.
+        this.#scrollable.parentElement?.querySelector(".u2-scroll-bar")?.
             addEventListener?.("pointerdown", (ev) => {
                 if (status.pointerId < 0) {
                     ev?.preventDefault?.();

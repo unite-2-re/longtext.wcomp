@@ -5,12 +5,12 @@ import Scrollable from "./Scrollable";
 //
 export const doButtonAction = (button, input: HTMLInputElement)=>{
     //
-    if (button.matches(".ux-copy") && (input?.selectionStart || 0) < (input?.selectionEnd || 0)) {
+    if (button.matches(".u2-copy") && (input?.selectionStart || 0) < (input?.selectionEnd || 0)) {
         navigator.clipboard.writeText(input.value.substring(input.selectionStart || 0, input.selectionEnd || 0));
     }
 
     //
-    if (button.matches(".ux-paste") && (input?.selectionStart || 0) <= (input?.selectionEnd || 0)) {
+    if (button.matches(".u2-paste") && (input?.selectionStart || 0) <= (input?.selectionEnd || 0)) {
         navigator.clipboard.readText().then(
             (clipText) => {
                 const oldStart = input?.selectionStart || 0;
@@ -39,7 +39,7 @@ export const makeInput = (host?: HTMLElement)=>{
     const input = host.querySelector("input");
 
     //
-    const box = host?.querySelector(".ux-input-box") as HTMLElement;
+    const box = host?.querySelector(".u2-input-box") as HTMLElement;
     const scrollPos = [box.scrollLeft, box.scrollTop];
     new Scrollable(box);
 

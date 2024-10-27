@@ -179,7 +179,7 @@ class FocusTextElement extends HTMLElement {
                 //
                 if (onClick) {
                     const sl  = measureInputInFocus(this.#input);
-                    const box = this?.querySelector(".ux-input-box");
+                    const box = this?.querySelector(".u2-input-box");
                     box?.scrollTo?.({
                         left: (sl?.width ?? box?.scrollLeft ?? 0) - 64,
                         top: box?.scrollTop ?? 0,
