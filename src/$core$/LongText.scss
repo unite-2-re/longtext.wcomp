@@ -1,4 +1,4 @@
-@layer long-text {
+@layer u2-long-text {
 
     //
     @property --scroll-left   { initial-value: 0; syntax: "<number>"; inherits: true; };
@@ -51,7 +51,7 @@
     }
 
     //
-    x-focustext, x-longtext {
+    u-focustext, u-longtext {
         & {
             --size-coef-x: clamp(0, calc(var(--offset-width)  / var(--scroll-width) ), 1);
             --size-coef-y: clamp(0, calc(var(--offset-height) / var(--scroll-height)), 1);
@@ -411,7 +411,7 @@
         }
 
         //
-        &:is(x-focustext) {
+        &:is(u-focustext) {
             & {
                 position: fixed;
                 z-index : 9999999;

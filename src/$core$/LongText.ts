@@ -62,7 +62,7 @@ class LongTextElement extends HTMLElement {
             //
             const whenClick = (ev)=>{
                 const button = ev.target as HTMLElement;
-                if (button.matches("x-longtext button") && this.contains(button)) {
+                if (button.matches("u-longtext button") && this.contains(button)) {
                     ev.preventDefault();
                     ev.stopPropagation();
                     if (document.activeElement == button) { this.restoreFocus(); };
@@ -121,7 +121,7 @@ class LongTextElement extends HTMLElement {
 }
 
 //
-customElements.define("x-longtext", LongTextElement);
+customElements.define("u-longtext", LongTextElement);
 
 //
 export default () => {};
