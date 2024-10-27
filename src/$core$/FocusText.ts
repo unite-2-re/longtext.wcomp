@@ -8,6 +8,9 @@ import { computeCaretPositionFromClient, measureInputInFocus } from "./Measure";
 import { zoomOf } from "./Zoom";
 
 //
+const preInit = URL.createObjectURL(new Blob([styles], {type: "text/css"}));
+
+//
 export const MOC = (element: HTMLElement | null, selector: string): boolean => {
     return (!!element?.matches?.(selector) || !!element?.closest?.(selector));
 };
@@ -43,7 +46,7 @@ class FocusTextElement extends HTMLElement {
 
             //
             const style = document.createElement("style");
-            style.innerHTML = styles;
+            style.innerHTML = `@import url("${preInit}");`;
             this.appendChild(style);
 
             //

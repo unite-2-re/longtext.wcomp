@@ -6,6 +6,9 @@ import html from "./LongText.html?raw";
 import { doButtonAction, makeInput } from "./Utils";
 
 //
+const preInit = URL.createObjectURL(new Blob([styles], {type: "text/css"}));
+
+//
 class LongTextElement extends HTMLElement {
     #input?: HTMLInputElement | null;
     #selectionRange: [number, number] = [0, 0];
@@ -30,7 +33,7 @@ class LongTextElement extends HTMLElement {
 
             //
             const style = document.createElement("style");
-            style.innerHTML = styles;
+            style.innerHTML = `@import url("${preInit}");`;
             this.appendChild(style);
 
             //
