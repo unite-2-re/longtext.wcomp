@@ -1,10 +1,10 @@
 {
-    "name": "longtext-wcomp",
+    "name": "@unite-2/longtext-wcomp",
     "description": "Long Text Input",
     "version": "1.0.0alpha",
     "private": false,
     "type": "module",
-    "index": "./dist/longtext-wcomp.js",
+    "index": "./dist/longtext.js",
     "scripts": {
         "dev": "vite",
         "worker": "vite build",
