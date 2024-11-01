@@ -1,5 +1,5 @@
 // @ts-ignore
-import styles from "./LongText.scss?inline";
+import styles from "./LongText.scss?inline&compress";
 
 // @ts-ignore
 import html from "./FocusText.html?raw";
