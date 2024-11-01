@@ -155,6 +155,9 @@ class Scrollable {
                     status.pointerLocation =
                         ev[["clientX", "clientY"][axis]] / zoomOf();
                     status.virtualScroll = this.#scrollable?.[["scrollLeft", "scrollTop"][axis]];
+
+                    // @ts-ignore
+                    ev.target?.setPointerCapture?.(ev.pointerId);
                 }
             });
 
@@ -202,6 +205,9 @@ class Scrollable {
                 //
                 status.pointerId = -1;
                 status.virtualScroll = this.#scrollable?.[["scrollLeft", "scrollTop"][axis]];
+
+                // @ts-ignore
+                ev.target?.releasePointerCapture?.(ev.pointerId);
             }
         };
 
