@@ -82,8 +82,8 @@
             box-sizing: border-box;
 
             //
-            place-content: center;
-            place-items: center;
+            place-content: safe center;
+            place-items: safe center;
             overflow: hidden;
 
             //
@@ -143,8 +143,8 @@
             //
             display: inline;
             flex-direction: row;
-            place-content: center;
-            place-items: center;
+            place-content: safe center;
+            place-items: safe center;
 
             //
             text-align: start;
@@ -364,9 +364,9 @@
                 pointer-events: none;
 
                 //
-                place-self: start start;
-                place-content: center start;
-                place-items: center start;
+                place-self: safe start start;
+                place-content: safe center start;
+                place-items: safe center start;
                 inset: 0px;
             }
 
