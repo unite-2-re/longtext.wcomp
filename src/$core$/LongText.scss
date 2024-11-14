@@ -118,8 +118,7 @@
         }
 
         //
-        .lucide {
-            contain-intrinsic-size: 24px 24px;
+        svg {
             aspect-ratio: 1 / 1;
             inline-size: max-content;
             block-size: 100%;
@@ -131,83 +130,87 @@
 
         //
         input {
-            inset: 0px;
-            user-select: auto;
-            //user-select: all;
-            overflow: hidden;
 
             //
-            pointer-events: auto;
-            //pointer-events: none;
+            & {
+                inset: 0px;
+                user-select: auto;
+                //user-select: all;
+                overflow: hidden;
 
-            //
-            display: inline;
-            flex-direction: row;
-            place-content: safe center;
-            place-items: safe center;
+                //
+                pointer-events: auto;
+                //pointer-events: none;
 
-            //
-            text-align: start;
-            justify-items: start;
+                //
+                display: inline;
+                flex-direction: row;
+                place-content: safe center;
+                place-items: safe center;
 
-            //
-            stroke: currentColor;
-            overflow-anchor: auto;
+                //
+                text-align: start;
+                justify-items: start;
 
-            //
-            container-type: normal;
-            contain: none;
+                //
+                stroke: currentColor;
+                overflow-anchor: auto;
 
-            // IMPORTANT!
-            field-sizing: content;
+                //
+                container-type: normal;
+                contain: none;
 
-            //
-            font-stretch: ultra-condensed;
-            letter-spacing: -1px;
-            font-size: 0.9rem;
-            font-weight: normal;
-            font-family:
-                "Fira Code",
-                "Consolas",
-                "Segoe UI Mono",
-                "Fira Mono",
-                "Droid Sans Mono",
-                "Roboto Mono",
-                "Oxygen Mono",
-                "Ubuntu Mono",
-                "Cascadia Mono",
-                "Source Code Pro",
-                "Courier New",
-                Menlo, Monaco,
-                ui-monospace, monospace;
+                // IMPORTANT!
+                field-sizing: content;
 
-            //
-            background-color: transparent;
-            block-size: max-content;
-            min-inline-size: 100%;
-            inline-size: max-content;
-            max-inline-size: none;
-            max-block-size: 100%;
-            min-block-size: 1ch;
-            touch-action: manipulation;
-            box-sizing: border-box;
+                //
+                font-stretch: ultra-condensed;
+                letter-spacing: -1px;
+                font-size: 0.9rem;
+                font-weight: normal;
+                font-family:
+                    "Fira Code",
+                    "Consolas",
+                    "Segoe UI Mono",
+                    "Fira Mono",
+                    "Droid Sans Mono",
+                    "Roboto Mono",
+                    "Oxygen Mono",
+                    "Ubuntu Mono",
+                    "Cascadia Mono",
+                    "Source Code Pro",
+                    "Courier New",
+                    Menlo, Monaco,
+                    ui-monospace, monospace;
 
-            //
-            outline: none 0px transparent;
-            border: none 0px transparent;
-            margin: 0px;
+                //
+                background-color: transparent;
+                block-size: max-content;
+                min-inline-size: 100%;
+                inline-size: max-content;
+                max-inline-size: none;
+                max-block-size: 100%;
+                min-block-size: 1ch;
+                touch-action: manipulation;
+                box-sizing: border-box;
 
-            //
-            -webkit-user-drag: none;
-            -moz-user-drag: none;
-            user-drag: none;
+                //
+                outline: none 0px transparent;
+                border: none 0px transparent;
+                margin: 0px;
 
-            //
-            white-space: nowrap;
-            text-overflow: clip;
-            word-break: keep-all;
-            word-wrap: normal;
-            flex-wrap: nowrap;
+                //
+                -webkit-user-drag: none;
+                -moz-user-drag: none;
+                user-drag: none;
+
+                //
+                white-space: nowrap;
+                text-overflow: clip;
+                word-break: keep-all;
+                word-wrap: normal;
+                flex-wrap: nowrap;
+            }
 
             //
             &[readonly], &[disabled], &[inert], &:read-only, &:disabled {
@@ -218,73 +221,77 @@
 
         //
         .u2-input-box {
-            //place-self: start;
-            inset: 0px;
 
             //
-            scroll-timeline-name: --axis-scroll-x;
-            scroll-timeline-axis: inline;
+            & {
+                //place-self: start;
+                inset: 0px;
 
-            //
-            cursor: text;
+                //
+                scroll-timeline-name: --axis-scroll-x;
+                scroll-timeline-axis: inline;
 
-            //
-            display: block;
-            padding: 0.5rem;
-            contain: content;
+                //
+                cursor: text;
 
-            //
-            container-type: inline-size;
+                //
+                display: block;
+                padding: 0.5rem;
+                contain: content;
 
-            //
-            block-size: max-content;
-            min-inline-size: 100%;
-            inline-size: 100%;
-            max-inline-size: 100%;
-            max-block-size: 100%;
-            min-block-size: 1ch;
-            box-sizing: border-box;
+                //
+                container-type: inline-size;
 
-            //
-            overflow-y: hidden;
-            overflow-x: auto;
-            overflow-anchor: auto;
-            overflow-block: hidden;
-            overflow-inline: auto;
+                //
+                block-size: max-content;
+                min-inline-size: 100%;
+                inline-size: 100%;
+                max-inline-size: 100%;
+                max-block-size: 100%;
+                min-block-size: 1ch;
+                box-sizing: border-box;
 
-            //
-            scrollbar-width: none;
-            scrollbar-gutter: stable;
-            scroll-behavior: smooth;
-            touch-action: pan-x;
+                //
+                overflow-y: hidden;
+                overflow-x: auto;
+                overflow-anchor: auto;
+                overflow-block: hidden;
+                overflow-inline: auto;
 
-            //
-            pointer-events: auto;
+                //
+                scrollbar-width: none;
+                scrollbar-gutter: stable;
+                scroll-behavior: smooth;
+                touch-action: pan-x;
 
-            //
-            grid-column: input;
-            grid-row: 1 / 2 span;
+                //
+                pointer-events: auto;
 
-            //
-            white-space: nowrap;
-            text-overflow: clip;
-            word-break: keep-all;
-            word-wrap: normal;
-            flex-wrap: nowrap;
+                //
+                grid-column: input;
+                grid-row: 1 / 2 span;
 
-            //
-            -webkit-user-drag: none;
-            -moz-user-drag: none;
-            user-drag: none;
+                //
+                white-space: nowrap;
+                text-overflow: clip;
+                word-break: keep-all;
+                word-wrap: normal;
+                flex-wrap: nowrap;
 
-            //
-            user-select: none;
-            background-color: transparent;
-            mask-mode: luminance;
-            mask-composite: intersect;
-            //
-            //scroll-snap-type: x proximity;
-            //scroll-snap-align: center;
+                //
+                -webkit-user-drag: none;
+                -moz-user-drag: none;
+                user-drag: none;
+
+                //
+                user-select: none;
+                background-color: transparent;
+                mask-mode: luminance;
+                mask-composite: intersect;
+                //
+                //scroll-snap-type: x proximity;
+                //scroll-snap-align: center;
+            }
 
             //
             &:has(*::selection) {
@@ -309,18 +316,20 @@
 
         //
         .u2-button-box {
-            grid-column: button;
-            grid-row: 1 / 2 span;
+            & {
+                grid-column: button;
+                grid-row: 1 / 2 span;
 
-            inline-size: 100%;
-            block-size: 100%;
+                inline-size: 100%;
+                block-size: 100%;
 
-            user-select: none;
-            touch-action: none;
-            pointer-events: none;
+                user-select: none;
+                touch-action: none;
+                pointer-events: none;
 
-            //
-            inset: 0px;
+                //
+                inset: 0px;
+            }
 
             //
             button {
