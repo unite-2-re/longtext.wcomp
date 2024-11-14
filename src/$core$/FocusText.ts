@@ -21,7 +21,7 @@ export const MOCElement = (element: HTMLElement | null, selector: string): HTMLE
 };
 
 //
-class FocusTextElement extends HTMLElement {
+class UIFocusTextElement extends HTMLElement {
     #input?: HTMLInputElement | null;
     #focus?: HTMLInputElement | null;
     #selectionRange: [number, number] = [0, 0];
@@ -208,11 +208,11 @@ class FocusTextElement extends HTMLElement {
 
 //
 //export default FocusTextElement;
-customElements.define("u-focustext", FocusTextElement);
+customElements.define("ui-focustext", UIFocusTextElement);
 
 //
 export default () => {};
-export { FocusTextElement };
+export { UIFocusTextElement };
 
 //
 const enforceFocus = (ev)=>{
@@ -224,7 +224,7 @@ const enforceFocus = (ev)=>{
     //
     if (matchMedia("(hover: none) and (pointer: coarse)").matches)
     {
-        const dedicated = (document.querySelector("u-focustext") as FocusTextElement);
+        const dedicated = (document.querySelector("u-focustext") as UIFocusTextElement);
         const dInput = dedicated?.querySelector?.("input");
 
         //
@@ -258,7 +258,7 @@ const enforceFocus = (ev)=>{
 //
 const whenClick = (ev)=>{
     const button = ev.target as HTMLElement;
-    const dedicated = (document.querySelector("u-focustext") as FocusTextElement);
+    const dedicated = (document.querySelector("ui-focustext") as UIFocusTextElement);
 
     //
     enforceFocus(ev);
