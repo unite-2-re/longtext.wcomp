@@ -48,6 +48,9 @@
     //
     *[inert] {
         pointer-events: none !important;
+        interactivity: inert !important;
+        user-select: none !important;
+        touch-action: none !important;
     }
 
     //
@@ -123,9 +126,12 @@
             inline-size: max-content;
             block-size: 100%;
             stroke: currentColor;
+
+            //
+            interactivity: inert;
+            pointer-events: none;
             user-select: none;
             touch-action: none;
-            pointer-events: none;
         }
 
         //
