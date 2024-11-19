@@ -102,7 +102,7 @@ class Scrollable {
 
         //
         initialValues();
-        requestAnimationFrame(initialValues);
+        requestIdleCallback(initialValues, {timeout: 1000});
 
         //
         const axis   = 0;
@@ -195,12 +195,12 @@ class Scrollable {
                 ev.preventDefault();
 
                 //
-                requestAnimationFrame(()=>{
+                requestIdleCallback(()=>{
                     this.#scrollable?.scrollTo({
                         [["left", "top"][axis]]: status.virtualScroll[axis],
                         behavior: "instant",
                     });
-                });
+                }, {timeout: 100});
 
                 //
                 status.pointerId = -1;

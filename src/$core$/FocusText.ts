@@ -81,9 +81,9 @@ class UIFocusTextElement extends HTMLElement {
 
             //
             this.#input?.addEventListener("focus", (ev)=>{
-                requestAnimationFrame(()=>{
+                requestIdleCallback(()=>{
                     this.#focus?.setAttribute?.("disabled", "");
-                });
+                }, {timeout: 1000});
             });
 
             //
@@ -95,7 +95,7 @@ class UIFocusTextElement extends HTMLElement {
                 this.#selectionRange[1] = (ev.target as HTMLInputElement)?.selectionEnd   || this.#selectionRange[0];
 
                 //
-                requestAnimationFrame(()=>{
+                requestIdleCallback(()=>{
                     this.#focus?.removeAttribute?.("disabled");
 
                     //
@@ -103,7 +103,7 @@ class UIFocusTextElement extends HTMLElement {
                         this.style.setProperty("display", "none", "important");
                         this.#focus = null;
                     }
-                });
+                }, {timeout: 100});
             });
 
             //
@@ -190,11 +190,11 @@ class UIFocusTextElement extends HTMLElement {
         }
 
         //
-        requestAnimationFrame(()=>{
+        requestIdleCallback(()=>{
             if (document.activeElement != this.#input || !this.#focus) {
                 this.style.setProperty("display", "none", "important");
             }
-        });
+        }, {timeout: 100});
     }
 
     //
@@ -282,9 +282,9 @@ document.documentElement.addEventListener("pointerdown", whenClick);
 document.addEventListener("focusin", (ev)=>{
     const input = ev?.target as HTMLElement;
     if (input?.matches("input[type=\"text\"]") && !input?.closest?.("u-focustext") && input instanceof HTMLInputElement) {
-        requestAnimationFrame(()=>{
+        requestIdleCallback(()=>{
             if (document.activeElement == input) { enforceFocus(ev); }
-        });
+        }, {timeout: 100});
     }
 });
 
