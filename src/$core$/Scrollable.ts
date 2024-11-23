@@ -40,17 +40,20 @@ class Scrollable {
     //
     constructor(scrollable: HTMLElement) {
         this.#scrollable = scrollable;
+        const weak = new WeakRef(this);
+        const scr_w = new WeakRef(this.#scrollable);
 
         //
         document.addEventListener("wheel", (ev)=>{
-            if (this.#scrollable?.matches?.(":where(:hover, :active)")) {
+            const scrollable = scr_w?.deref?.();
+            if (scrollable?.matches?.(":where(:hover, :active)")) {
                 ev.preventDefault();
                 ev.stopPropagation();
 
                 //
                 //if (ev.deltaMode == WheelEvent.DOM_DELTA_PIXEL)
                 {
-                    this.#scrollable.scrollBy({
+                    scrollable?.scrollBy?.({
                         left: ((ev?.deltaY || 0)+(ev?.deltaX || 0)), top: 0,
                         behavior: "smooth"
                     });
@@ -60,8 +63,9 @@ class Scrollable {
 
         //
         const enforceFocus = (ev)=>{
+            const scrollable = scr_w?.deref?.();
             const element = ev?.target as HTMLElement;
-            if (element?.matches?.("input[type=\"text\"], u-longtext, u-focustext") && (this.#scrollable?.contains(element) || element?.contains?.(this.#scrollable as Node))) {
+            if (element?.matches?.("input[type=\"text\"], u-longtext, u-focustext") && (scrollable?.contains(element) || element?.contains?.(scrollable as Node))) {
                 const input: HTMLInputElement | null = (element?.matches("input") ? element : element?.querySelector?.("input[type=\"text\"]")) as HTMLInputElement;
                 if (input) {
                     if (ev.type == "click" || ev.pointerType == "touch") {
@@ -83,19 +87,20 @@ class Scrollable {
 
         //
         const initialValues = ()=>{
-            this.#scrollable?.parentElement?.style.setProperty("--scroll-left"  , "" + this.#scrollable.scrollLeft  , "");
-            this.#scrollable?.parentElement?.style.setProperty("--scroll-top"   , "" + this.#scrollable.scrollTop   , "");
-            this.#scrollable?.parentElement?.style.setProperty("--scroll-width" , "" + this.#scrollable.scrollWidth , "");
-            this.#scrollable?.parentElement?.style.setProperty("--scroll-height", "" + this.#scrollable.scrollHeight, "");
-            this.#scrollable?.parentElement?.style.setProperty("--offset-width" , "" + this.#scrollable.offsetWidth , "");
-            this.#scrollable?.parentElement?.style.setProperty("--offset-height", "" + this.#scrollable.offsetHeight, "");
-            if ((this.#scrollable?.offsetWidth || 0) >= (this.#scrollable?.scrollWidth || 0)) {
-                if (!this.#scrollable?.parentElement?.querySelector(".u2-scroll-box")?.classList?.contains?.("hidden")) {
-                    this.#scrollable?.parentElement?.querySelector(".u2-scroll-box")?.classList?.add?.("hidden");
+            const scrollable = scr_w?.deref?.();
+            scrollable?.parentElement?.style.setProperty("--scroll-left"  , "" + scrollable.scrollLeft  , "");
+            scrollable?.parentElement?.style.setProperty("--scroll-top"   , "" + scrollable.scrollTop   , "");
+            scrollable?.parentElement?.style.setProperty("--scroll-width" , "" + scrollable.scrollWidth , "");
+            scrollable?.parentElement?.style.setProperty("--scroll-height", "" + scrollable.scrollHeight, "");
+            scrollable?.parentElement?.style.setProperty("--offset-width" , "" + scrollable.offsetWidth , "");
+            scrollable?.parentElement?.style.setProperty("--offset-height", "" + scrollable.offsetHeight, "");
+            if ((scrollable?.offsetWidth || 0) >= (scrollable?.scrollWidth || 0)) {
+                if (!scrollable?.parentElement?.querySelector(".u2-scroll-box")?.classList?.contains?.("hidden")) {
+                    scrollable?.parentElement?.querySelector(".u2-scroll-box")?.classList?.add?.("hidden");
                 }
             } else {
-                if (this.#scrollable?.parentElement?.querySelector(".u2-scroll-box")?.classList?.contains?.("hidden")) {
-                    this.#scrollable?.parentElement?.querySelector(".u2-scroll-box")?.classList?.remove?.("hidden");
+                if (scrollable?.parentElement?.querySelector(".u2-scroll-box")?.classList?.contains?.("hidden")) {
+                    scrollable?.parentElement?.querySelector(".u2-scroll-box")?.classList?.remove?.("hidden");
                 }
             }
         }
@@ -132,8 +137,11 @@ class Scrollable {
         //
         observeBorderBox(this.#scrollable, (box)=>{
             initialValues();
-            this.#scrollable?.parentElement?.style.setProperty("--offset-width" , "" + box.inlineSize, "");
-            this.#scrollable?.parentElement?.style.setProperty("--offset-height", "" + box.blockSize , "");
+
+            //
+            const scrollable = scr_w?.deref?.();
+            scrollable?.parentElement?.style.setProperty("--offset-width" , "" + box.inlineSize, "");
+            scrollable?.parentElement?.style.setProperty("--offset-height", "" + box.blockSize , "");
         });
 
         //
@@ -154,7 +162,7 @@ class Scrollable {
                     status.pointerId = ev.pointerId;
                     status.pointerLocation =
                         ev[["clientX", "clientY"][axis]] / zoomOf();
-                    status.virtualScroll = this.#scrollable?.[["scrollLeft", "scrollTop"][axis]];
+                    status.virtualScroll = scr_w?.deref?.()?.[["scrollLeft", "scrollTop"][axis]];
 
                     // @ts-ignore
                     ev.target?.setPointerCapture?.(ev.pointerId);
@@ -168,19 +176,20 @@ class Scrollable {
                 ev.preventDefault();
 
                 //
-                const previous = this.#scrollable?.[["scrollLeft", "scrollTop"][axis]];
+                const scrollable = scr_w?.deref?.();
+                const previous = scrollable?.[["scrollLeft", "scrollTop"][axis]];
                 const coord = ev[["clientX", "clientY"][axis]] / zoomOf();
 
                 //
                 status.virtualScroll +=
                     (coord - status.pointerLocation) /
-                    Math.max(Math.max(Math.min(this.#scrollable?.[["offsetWidth", "offsetHeight"][axis]] / Math.max(this.#scrollable?.[["scrollWidth", "scrollHeight"][axis]], 0.0001), 1), 0), 0.0001);
+                    Math.max(Math.max(Math.min(scrollable?.[["offsetWidth", "offsetHeight"][axis]] / Math.max(scrollable?.[["scrollWidth", "scrollHeight"][axis]], 0.0001), 1), 0), 0.0001);
                 status.pointerLocation = coord;
 
                 //
                 const realShift = status.virtualScroll - previous;
                 if (Math.abs(realShift) >= 0.001) {
-                    this.#scrollable?.scrollBy({
+                    scrollable?.scrollBy({
                         [["left", "top"][axis]]: realShift,
                         behavior: "instant",
                     });
@@ -195,8 +204,9 @@ class Scrollable {
                 ev.preventDefault();
 
                 //
+                const scrollable = scr_w?.deref?.();
                 requestIdleCallback(()=>{
-                    this.#scrollable?.scrollTo({
+                    scrollable?.scrollTo?.({
                         [["left", "top"][axis]]: status.virtualScroll[axis],
                         behavior: "instant",
                     });
@@ -204,7 +214,7 @@ class Scrollable {
 
                 //
                 status.pointerId = -1;
-                status.virtualScroll = this.#scrollable?.[["scrollLeft", "scrollTop"][axis]];
+                status.virtualScroll = scrollable?.[["scrollLeft", "scrollTop"][axis]];
 
                 // @ts-ignore
                 ev.target?.releasePointerCapture?.(ev.pointerId);

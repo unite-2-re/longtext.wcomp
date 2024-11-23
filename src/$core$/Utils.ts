@@ -36,19 +36,30 @@ export const doButtonAction = (button, input: HTMLInputElement)=>{
 //
 export const makeInput = (host?: HTMLElement)=>{
     if (!host) return;
-    const input = host.querySelector("input");
+    const input = host?.querySelector?.("input");
+    const weak  = new WeakRef(host);
+    const scp   = [0, 0];
+    const scp_w = new WeakRef(scp); //scrollPos
 
     //
-    const box = host?.querySelector(".u2-input-box") as HTMLElement;
-    const scrollPos = [box.scrollLeft, box.scrollTop];
-    new Scrollable(box);
+    {
+        const box = host?.querySelector?.(".u2-input-box") as HTMLElement;
+        const scrollPos = scp;
+        if (scrollPos) {
+            scrollPos[0] = box?.scrollLeft || 0;
+            scrollPos[1] = box?.scrollTop  || 0;
+        }
+        new Scrollable(box);
+    }
 
     //
     let selection = false;
     const whenCancel = (ev)=>{
+        const box = weak?.deref?.()?.querySelector?.(".u2-input-box") as HTMLElement;
+        const scrollPos = scp_w?.deref?.();
         if (selection) { box.scrollTo({
-            left: scrollPos[0],
-            top: scrollPos[1],
+            left: scrollPos?.[0] || 0,
+            top : scrollPos?.[1] || 0,
             behavior: "instant"
         }); };
         selection = false;
@@ -60,8 +71,12 @@ export const makeInput = (host?: HTMLElement)=>{
 
     //
     document?.addEventListener("selectionchange", ()=>{
-        scrollPos[0] = box.scrollLeft;
-        scrollPos[1] = box.scrollTop;
+        const box = weak?.deref?.()?.querySelector(".u2-input-box") as HTMLElement;
+        const scrollPos = scp_w?.deref?.();
+        if (scrollPos) {
+            scrollPos[0] = box?.scrollLeft || 0;
+            scrollPos[1] = box?.scrollTop  || 0;
+        }
         if (input?.selectionStart != input?.selectionEnd) {
             //selection = true;
         }
@@ -69,6 +84,8 @@ export const makeInput = (host?: HTMLElement)=>{
 
     //
     const preventScroll = ()=>{
+        const box = weak?.deref?.()?.querySelector(".u2-input-box") as HTMLElement;
+        const scrollPos = [box.scrollLeft, box.scrollTop];
         if (selection) { box.scrollTo({
             left: scrollPos[0],
             top: scrollPos[1],
@@ -77,8 +94,11 @@ export const makeInput = (host?: HTMLElement)=>{
     }
 
     //
-    box.addEventListener("scroll", preventScroll, {capture: true, passive: true});
-    box.addEventListener("scrollend", preventScroll, {capture: true, passive: true});
+    {
+        const box = host?.querySelector?.(".u2-input-box") as HTMLElement;
+        box?.addEventListener?.("scroll"   , preventScroll, {capture: true, passive: true});
+        box?.addEventListener?.("scrollend", preventScroll, {capture: true, passive: true});
+    }
 
     //
     const toFocus = ()=>{
@@ -97,12 +117,14 @@ export const makeInput = (host?: HTMLElement)=>{
     }
 
     //
-    host?.addEventListener("dragstart", preventDrag);
-    input?.addEventListener("dragstart", preventDrag);
-    box?.addEventListener("dragstart", preventDrag);
+    input?.addEventListener?.("dragstart", preventDrag);
+    host?.addEventListener?.("dragstart", preventDrag);
+    host?.addEventListener?.("focus", toFocus);
 
-    //
-    box.addEventListener("focus", toFocus);
-    host.addEventListener("focus", toFocus);
+    {   //
+        const box = host?.querySelector?.(".u2-input-box") as HTMLElement;
+        box.addEventListener?.("focus", toFocus);
+        box?.addEventListener?.("dragstart", preventDrag);
+    }
 }
 

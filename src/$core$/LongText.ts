@@ -63,12 +63,13 @@ class UILongTextElement extends HTMLElement {
             }
 
             //
+            const weak = new WeakRef(this);
             const whenClick = (ev)=>{
                 const button = ev.target as HTMLElement;
-                if (button.matches("u-longtext button") && this.contains(button)) {
+                if (button.matches("u-longtext button") && weak?.deref()?.contains?.(button)) {
                     ev.preventDefault();
                     ev.stopPropagation();
-                    if (document.activeElement == button) { this.restoreFocus(); };
+                    if (document.activeElement == button) { weak?.deref()?.restoreFocus?.(); };
                     if (ev.type == "click") {
                         doButtonAction(button, document.activeElement as HTMLInputElement);
                     }
