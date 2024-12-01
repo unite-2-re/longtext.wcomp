@@ -36,18 +36,18 @@ class UIFocusTextElement extends HTMLElement {
             const exists = this.querySelector("input");
             const parser = new DOMParser();
             const dom = parser.parseFromString(html, "text/html");
-            if (exists) { this.removeChild(exists); };
+            //if (exists) { this.removeChild(exists); };
 
             //
-            this.innerHTML = "";
+            const shadowRoot = this.attachShadow({ mode: "open" });
             dom.querySelector("template")?.content?.childNodes.forEach(cp => {
-                this.appendChild(cp.cloneNode(true));
+                shadowRoot.appendChild(cp.cloneNode(true));
             });
 
             //
             const style = document.createElement("style");
             style.innerHTML = `@import url("${preInit}");`;
-            this.appendChild(style);
+            shadowRoot.appendChild(style);
 
             //
             this.#selectionRange = [0, 0];
@@ -56,22 +56,28 @@ class UIFocusTextElement extends HTMLElement {
             //
             const next = this.querySelector("input");
             this.#input = exists ?? next;
-            if (exists) { next?.replaceWith?.(exists); }
 
             //
-            this.#input?.addEventListener("change", (ev)=>{
+            this?.addEventListener("change", (ev)=>{
                 const input = ev.target as HTMLInputElement;
-                if (!CSS.supports("field-sizing", "content")) {
+                if (!CSS.supports("field-sizing", "content") && input?.matches?.("input")) {
                     input?.style?.setProperty("inline-size", (input?.value||"").length + "ch");
                 }
             });
 
             //
-            this.#input?.addEventListener("input", (ev)=>{
+            this?.addEventListener("input", (ev)=>{
                 const input = ev.target as HTMLInputElement;
-                if (!CSS.supports("field-sizing", "content")) {
+                if (!CSS.supports("field-sizing", "content") && input?.matches?.("input")) {
                     input?.style?.setProperty("inline-size", (input?.value||"").length + "ch");
                 }
+            });
+
+            //
+            this?.addEventListener("focusin", (ev)=>{
+                requestIdleCallback(()=>{
+                    this.#focus?.setAttribute?.("disabled", "");
+                }, {timeout: 1000});
             });
 
             //
@@ -80,30 +86,25 @@ class UIFocusTextElement extends HTMLElement {
             }
 
             //
-            this.#input?.addEventListener("focus", (ev)=>{
-                requestIdleCallback(()=>{
-                    this.#focus?.setAttribute?.("disabled", "");
-                }, {timeout: 1000});
-            });
-
-            //
-            this.#input?.addEventListener("change", (ev)=>{ this.reflectInput(); });
-            this.#input?.addEventListener("input", (ev)=>{ this.reflectInput(); });
-            this.#input?.addEventListener("blur", (ev)=>{
-                //
-                this.#selectionRange[0] = (ev.target as HTMLInputElement)?.selectionStart || 0;
-                this.#selectionRange[1] = (ev.target as HTMLInputElement)?.selectionEnd   || this.#selectionRange[0];
-
-                //
-                requestIdleCallback(()=>{
-                    this.#focus?.removeAttribute?.("disabled");
+            this?.addEventListener("change", (ev)=>{ this.reflectInput(); });
+            this?.addEventListener("input", (ev)=>{ this.reflectInput(); });
+            this?.addEventListener("focusout", (ev)=>{
+                if ((ev.target as HTMLInputElement)?.matches?.("input")) {
+                    //
+                    this.#selectionRange[0] = (ev.target as HTMLInputElement)?.selectionStart || 0;
+                    this.#selectionRange[1] = (ev.target as HTMLInputElement)?.selectionEnd   || this.#selectionRange[0];
 
                     //
-                    if (document.activeElement != this.#input) {
-                        this.style.setProperty("display", "none", "important");
-                        this.#focus = null;
-                    }
-                }, {timeout: 100});
+                    requestIdleCallback(()=>{
+                        this.#focus?.removeAttribute?.("disabled");
+
+                        //
+                        if (document.activeElement != this.#input) {
+                            this.style.setProperty("display", "none", "important");
+                            this.#focus = null;
+                        }
+                    }, {timeout: 100});
+                }
             });
 
             //

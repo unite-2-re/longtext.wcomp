@@ -54,7 +54,7 @@
     }
 
     //
-    u-focustext, u-longtext {
+    :host {
         & {
             --size-coef-x: clamp(0, calc(var(--offset-width)  / var(--scroll-width) ), 1);
             --size-coef-y: clamp(0, calc(var(--offset-height) / var(--scroll-height)), 1);
@@ -135,7 +135,7 @@
         }
 
         //
-        input {
+        ::slotted(input) {
 
             //
             & {
@@ -446,7 +446,7 @@
             & { inset-block-end: calc(min(env(keyboard-inset-bottom, 0px), env(keyboard-inset-height, 0px)) / var(--zoom, 1)); }
 
             //
-            input {
+            ::slotted(input) {
                 font-size: 1.4rem;
                 overflow-anchor: none;
                 user-select: auto;

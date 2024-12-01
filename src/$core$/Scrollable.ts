@@ -1,5 +1,38 @@
 import { zoomOf } from "./Zoom";
 
+//
+const regProp = (options: any)=>{
+    try {
+        CSS?.registerProperty?.(options);
+    } catch(e) {
+        console.warn(e);
+    };
+};
+
+//
+regProp?.({
+    name: "--percent",
+    syntax: "<number>",
+    inherits: true,
+    initialValue: "0",
+});
+
+//
+regProp?.({
+    name: "--percent-y",
+    syntax: "<number>",
+    inherits: true,
+    initialValue: "0",
+});
+
+//
+regProp?.({
+    name: "--percent-x",
+    syntax: "<number>",
+    inherits: true,
+    initialValue: "0",
+});
+
 // TODO: support of fragments
 const onBorderObserve = new WeakMap<HTMLElement, Function[]>();
 export const observeBorderBox = (element, cb) => {
@@ -38,7 +71,7 @@ class Scrollable {
     #scrollable?: HTMLElement;
 
     //
-    constructor(scrollable: HTMLElement) {
+    constructor(scrollable: HTMLElement, host?: WeakRef<HTMLElement>) {
         this.#scrollable = scrollable;
         const weak = new WeakRef(this);
         const scr_w = new WeakRef(this.#scrollable);
@@ -62,45 +95,24 @@ class Scrollable {
         }, {passive: false});
 
         //
-        const enforceFocus = (ev)=>{
-            const scrollable = scr_w?.deref?.();
-            const element = ev?.target as HTMLElement;
-            if (element?.matches?.("input[type=\"text\"], u-longtext, u-focustext") && (scrollable?.contains(element) || element?.contains?.(scrollable as Node))) {
-                const input: HTMLInputElement | null = (element?.matches("input") ? element : element?.querySelector?.("input[type=\"text\"]")) as HTMLInputElement;
-                if (input) {
-                    if (ev.type == "click" || ev.pointerType == "touch") {
-                        ev?.preventDefault?.();
-                        ev?.stopPropagation?.();
-                    }
-                    if (document.activeElement != input && ev.type == "click") {
-                        input?.focus?.();
-                    }
-                }
-            }
-        };
-
-        //
-        document.addEventListener("click", enforceFocus);
-        document.addEventListener("select", enforceFocus);
-        document.addEventListener("selectionchange", enforceFocus);
-        document.addEventListener("selectstart", enforceFocus);
-
-        //
         const initialValues = ()=>{
             const scrollable = scr_w?.deref?.();
-            scrollable?.parentElement?.style.setProperty("--scroll-left"  , "" + scrollable.scrollLeft  , "");
-            scrollable?.parentElement?.style.setProperty("--scroll-top"   , "" + scrollable.scrollTop   , "");
-            scrollable?.parentElement?.style.setProperty("--scroll-width" , "" + scrollable.scrollWidth , "");
-            scrollable?.parentElement?.style.setProperty("--scroll-height", "" + scrollable.scrollHeight, "");
-            scrollable?.parentElement?.style.setProperty("--offset-width" , "" + scrollable.offsetWidth , "");
-            scrollable?.parentElement?.style.setProperty("--offset-height", "" + scrollable.offsetHeight, "");
-            if ((scrollable?.offsetWidth || 0) >= (scrollable?.scrollWidth || 0)) {
-                if (!scrollable?.parentElement?.querySelector(".u2-scroll-box")?.classList?.contains?.("hidden")) {
-                    scrollable?.parentElement?.querySelector(".u2-scroll-box")?.classList?.add?.("hidden");
-                }
-            } else {
-                if (scrollable?.parentElement?.querySelector(".u2-scroll-box")?.classList?.contains?.("hidden")) {
-                    scrollable?.parentElement?.querySelector(".u2-scroll-box")?.classList?.remove?.("hidden");
+            const parent = host?.deref?.();
+            if (scrollable) {
+                parent?.style.setProperty("--scroll-left"  , "" + scrollable.scrollLeft  , "");
+                parent?.style.setProperty("--scroll-top"   , "" + scrollable.scrollTop   , "");
+                parent?.style.setProperty("--scroll-width" , "" + scrollable.scrollWidth , "");
+                parent?.style.setProperty("--scroll-height", "" + scrollable.scrollHeight, "");
+                parent?.style.setProperty("--offset-width" , "" + scrollable.offsetWidth , "");
+                parent?.style.setProperty("--offset-height", "" + scrollable.offsetHeight, "");
+                if ((scrollable?.offsetWidth || 0) >= (scrollable?.scrollWidth || 0)) {
+                    if (!parent?.querySelector(".u2-scroll-box")?.classList?.contains?.("hidden")) {
+                        parent?.querySelector(".u2-scroll-box")?.classList?.add?.("hidden");
+                    }
+                } else {
+                    if (parent?.querySelector(".u2-scroll-box")?.classList?.contains?.("hidden")) {
+                        parent?.querySelector(".u2-scroll-box")?.classList?.remove?.("hidden");
+                    }
                 }
             }
         }
@@ -140,34 +152,36 @@ class Scrollable {
 
             //
             const scrollable = scr_w?.deref?.();
-            scrollable?.parentElement?.style.setProperty("--offset-width" , "" + box.inlineSize, "");
-            scrollable?.parentElement?.style.setProperty("--offset-height", "" + box.blockSize , "");
+            const parent = host?.deref?.();
+
+            //
+            parent?.style.setProperty("--offset-width" , "" + box.inlineSize, "");
+            parent?.style.setProperty("--offset-height", "" + box.blockSize , "");
         });
 
         //
-        this.#scrollable.parentElement?.querySelector(".u2-scroll-bar")?.
-            addEventListener?.("dragstart", (ev)=>{
-                ev?.preventDefault?.();
-                ev?.stopPropagation?.();
-            });
+        const scrollbar = host?.deref?.()?.shadowRoot?.querySelector?.(".u2-scroll-bar");
+        scrollbar?.addEventListener?.("dragstart", (ev)=>{
+            ev?.preventDefault?.();
+            ev?.stopPropagation?.();
+        });
 
         //
-        this.#scrollable.parentElement?.querySelector(".u2-scroll-bar")?.
-            addEventListener?.("pointerdown", (ev) => {
-                if (status.pointerId < 0) {
-                    ev?.preventDefault?.();
-                    ev?.stopPropagation?.();
+        scrollbar?.addEventListener?.("pointerdown", (ev) => {
+            if (status.pointerId < 0) {
+                ev?.preventDefault?.();
+                ev?.stopPropagation?.();
 
-                    //
-                    status.pointerId = ev.pointerId;
-                    status.pointerLocation =
-                        ev[["clientX", "clientY"][axis]] / zoomOf();
-                    status.virtualScroll = scr_w?.deref?.()?.[["scrollLeft", "scrollTop"][axis]];
+                //
+                status.pointerId = ev.pointerId;
+                status.pointerLocation =
+                    ev[["clientX", "clientY"][axis]] / zoomOf();
+                status.virtualScroll = scr_w?.deref?.()?.[["scrollLeft", "scrollTop"][axis]];
 
-                    // @ts-ignore
-                    ev.target?.setPointerCapture?.(ev.pointerId);
-                }
-            });
+                // @ts-ignore
+                ev.target?.setPointerCapture?.(ev.pointerId);
+            }
+        });
 
         //
         document.documentElement.addEventListener("pointermove", (ev) => {

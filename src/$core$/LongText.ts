@@ -23,36 +23,36 @@ class UILongTextElement extends HTMLElement {
             const exists = this.querySelector("input");
             const parser = new DOMParser();
             const dom = parser.parseFromString(html, "text/html");
-            if (exists) { this.removeChild(exists); };
+            //if (exists) { this.removeChild(exists); };
 
             //
-            this.innerHTML = "";
+            const shadowRoot = this.attachShadow({ mode: "open" });
             dom.querySelector("template")?.content?.childNodes.forEach(cp => {
-                this.appendChild(cp.cloneNode(true));
+                //this.appendChild(cp.cloneNode(true));
+                shadowRoot.appendChild(cp.cloneNode(true));
             });
 
             //
             const style = document.createElement("style");
             style.innerHTML = `@import url("${preInit}");`;
-            this.appendChild(style);
+            shadowRoot.appendChild(style);
 
             //
             const next = this.querySelector("input");
             this.#input = exists ?? next;
-            if (exists) { next?.replaceWith?.(exists); }
 
             //
-            this.#input?.addEventListener("change", (ev)=>{
+            this.addEventListener("change", (ev)=>{
                 const input = ev.target as HTMLInputElement;
-                if (!CSS.supports("field-sizing", "content")) {
+                if (!CSS.supports("field-sizing", "content") && input?.matches?.("input")) {
                     input?.style?.setProperty("inline-size", (input?.value||"").length + "ch");
                 }
             });
 
             //
-            this.#input?.addEventListener("input", (ev)=>{
+            this.addEventListener("input", (ev)=>{
                 const input = ev.target as HTMLInputElement;
-                if (!CSS.supports("field-sizing", "content")) {
+                if (!CSS.supports("field-sizing", "content") && input?.matches?.("input")) {
                     input?.style?.setProperty("inline-size", (input?.value||"").length + "ch");
                 }
             });

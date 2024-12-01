@@ -42,20 +42,44 @@ export const makeInput = (host?: HTMLElement)=>{
     const scp_w = new WeakRef(scp); //scrollPos
 
     //
+    const enforceFocus = (ev)=>{
+        const scrollable = weak?.deref?.();
+        const element = ev?.target as HTMLElement;
+        if (element?.matches?.("input[type=\"text\"], u-longtext, u-focustext") && (scrollable?.contains(element) || element?.contains?.(scrollable as Node))) {
+            const input: HTMLInputElement | null = (element?.matches("input") ? element : element?.querySelector?.("input[type=\"text\"]")) as HTMLInputElement;
+            if (input) {
+                if (ev.type == "click" || ev.pointerType == "touch") {
+                    ev?.preventDefault?.();
+                    ev?.stopPropagation?.();
+                }
+                if (document.activeElement != input && ev.type == "click") {
+                    input?.focus?.();
+                }
+            }
+        }
+    };
+
+    //
+    document.addEventListener("click", enforceFocus);
+    document.addEventListener("select", enforceFocus);
+    document.addEventListener("selectionchange", enforceFocus);
+    document.addEventListener("selectstart", enforceFocus);
+
+    //
     {
-        const box = host?.querySelector?.(".u2-input-box") as HTMLElement;
+        const box = host?.shadowRoot?.querySelector?.(".u2-input-box") as HTMLElement;
         const scrollPos = scp;
         if (scrollPos) {
             scrollPos[0] = box?.scrollLeft || 0;
             scrollPos[1] = box?.scrollTop  || 0;
         }
-        new Scrollable(box);
+        new Scrollable(box, new WeakRef(host));
     }
 
     //
     let selection = false;
     const whenCancel = (ev)=>{
-        const box = weak?.deref?.()?.querySelector?.(".u2-input-box") as HTMLElement;
+        const box = weak?.deref?.()?.shadowRoot?.querySelector?.(".u2-input-box") as HTMLElement;
         const scrollPos = scp_w?.deref?.();
         if (selection) { box.scrollTo({
             left: scrollPos?.[0] || 0,
@@ -66,11 +90,9 @@ export const makeInput = (host?: HTMLElement)=>{
     }
 
     //
-    document.addEventListener("pointerup", whenCancel, {capture: true, passive: true});
-    document.addEventListener("pointercancel", whenCancel, {capture: true, passive: true});
-
-    //
-    document?.addEventListener("selectionchange", ()=>{
+    document?.addEventListener?.("pointerup", whenCancel, {capture: true, passive: true});
+    document?.addEventListener?.("pointercancel", whenCancel, {capture: true, passive: true});
+    document?.addEventListener?.("selectionchange", ()=>{
         const box = weak?.deref?.()?.querySelector(".u2-input-box") as HTMLElement;
         const scrollPos = scp_w?.deref?.();
         if (scrollPos) {
@@ -84,7 +106,7 @@ export const makeInput = (host?: HTMLElement)=>{
 
     //
     const preventScroll = ()=>{
-        const box = weak?.deref?.()?.querySelector(".u2-input-box") as HTMLElement;
+        const box = weak?.deref?.()?.shadowRoot?.querySelector(".u2-input-box") as HTMLElement;
         const scrollPos = [box.scrollLeft, box.scrollTop];
         if (selection) { box.scrollTo({
             left: scrollPos[0],
@@ -95,7 +117,7 @@ export const makeInput = (host?: HTMLElement)=>{
 
     //
     {
-        const box = host?.querySelector?.(".u2-input-box") as HTMLElement;
+        const box = host?.shadowRoot?.querySelector?.(".u2-input-box") as HTMLElement;
         box?.addEventListener?.("scroll"   , preventScroll, {capture: true, passive: true});
         box?.addEventListener?.("scrollend", preventScroll, {capture: true, passive: true});
     }
@@ -122,8 +144,8 @@ export const makeInput = (host?: HTMLElement)=>{
     host?.addEventListener?.("focus", toFocus);
 
     {   //
-        const box = host?.querySelector?.(".u2-input-box") as HTMLElement;
-        box.addEventListener?.("focus", toFocus);
+        const box = host?.shadowRoot?.querySelector?.(".u2-input-box") as HTMLElement;
+        box?.addEventListener?.("focus", toFocus);
         box?.addEventListener?.("dragstart", preventDrag);
     }
 }
