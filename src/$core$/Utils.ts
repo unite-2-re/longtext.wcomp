@@ -55,7 +55,7 @@ export const makeInput = (host?: HTMLElement, ROOT = document.documentElement)=>
     const enforceFocus = (ev)=>{
         const scrollable = weak?.deref?.();
         const element = ev?.target as HTMLElement;
-        if (element?.matches?.("input[type=\"text\"], u-longtext, ui-focustext") && (scrollable?.contains(element) || element?.contains?.(scrollable as Node))) {
+        if (element?.matches?.("input[type=\"text\"], ui-longtext, ui-focustext") && (scrollable?.contains(element) || element?.contains?.(scrollable as Node))) {
             const input: HTMLInputElement | null = (element?.matches("input") ? element : element?.querySelector?.("input[type=\"text\"]")) as HTMLInputElement;
             if (input) {
                 if (ev.type == "click" || ev.pointerType == "touch") {

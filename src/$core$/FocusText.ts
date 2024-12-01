@@ -18,6 +18,7 @@ export class UIFocusTextElement extends HTMLElement {
     #initialized: boolean = false;
 
     //
+    constructor() { super(); }
     #initialize() {
         if (!this.#initialized) {
             this.#initialized = true;
@@ -104,14 +105,6 @@ export class UIFocusTextElement extends HTMLElement {
             //
             makeInput(this);
         }
-    }
-
-    //
-    constructor() {
-        super();
-
-        //
-        //this.style.setProperty("display", "none", "important");
     }
 
     //
@@ -202,7 +195,7 @@ export const makeFocusable = (ROOT = document.documentElement)=>{
     //
     const enforceFocus = (ev)=>{
         let element = ev?.target as HTMLInputElement;
-        if (MOC(element, "input[type=\"text\"], ui-focustext, u-longtext") && !element.matches("input[type=\"text\"]")) {
+        if (MOC(element, "input[type=\"text\"], ui-focustext, ui-longtext") && !element.matches("input[type=\"text\"]")) {
             element = element?.querySelector?.("input[type=\"text\"]") ?? element;
         }
 

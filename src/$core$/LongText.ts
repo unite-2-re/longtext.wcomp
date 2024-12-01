@@ -15,6 +15,7 @@ export class UILongTextElement extends HTMLElement {
     #initialized: boolean = false;
 
     //
+    constructor() { super(); }
     #initialize() {
         if (!this.#initialized) {
             this.#initialized = true;
@@ -63,46 +64,11 @@ export class UILongTextElement extends HTMLElement {
             }
 
             //
-            const weak = new WeakRef(this);
-            const whenClick = (ev)=>{
-                const button = ev.target as HTMLElement;
-                if (button.matches("u-longtext button") && weak?.deref()?.contains?.(button)) {
-                    ev.preventDefault();
-                    ev.stopPropagation();
-                    if (document.activeElement == button) { weak?.deref()?.restoreFocus?.(); };
-                    if (ev.type == "click") {
-                        doButtonAction(button, document.activeElement as HTMLInputElement);
-                    }
-                }
-            }
-
-            //
-            document.documentElement.addEventListener("click", whenClick, {capture: true});
-            document.documentElement.addEventListener("pointerdown", whenClick, {capture: true});
+            //const weak = new WeakRef(this);
 
             //
             makeInput(this);
         }
-    }
-
-    //
-    /*static get observedAttributes() {
-        return ['value', 'maxlength', 'type', 'autocomplete'];
-    }
-
-    //
-    attributeChangedCallback(name, oldValue, newValue) {
-        if (this.#input && oldValue != newValue) {
-            this.#input.setAttribute(name, newValue);
-            if (name == "value") {
-                this.#input.name = newValue;
-            }
-        }
-    }*/
-
-    //
-    constructor() {
-        super();
     }
 
     //
@@ -126,5 +92,25 @@ export class UILongTextElement extends HTMLElement {
 
 //
 export default (ROOT = document.documentElement) => {
+    const whenClick = (ev)=>{
+        const button = ev.target as any;
+        const input  = button?.closest?.("ui-longtext");
+        if (button?.matches?.("ui-longtext button") && input?.contains?.(button)) {
+            ev?.preventDefault?.();
+            ev?.stopPropagation?.();
+
+            //
+            if (document.activeElement == button) { input?.restoreFocus?.(); };
+            if (ev?.type == "click") {
+                doButtonAction(button, document.activeElement as HTMLInputElement);
+            }
+        }
+    }
+
+    //
+    ROOT?.addEventListener?.("click", whenClick, {capture: true});
+    ROOT?.addEventListener?.("pointerdown", whenClick, {capture: true});
+
+    //
     customElements.define("ui-longtext", UILongTextElement);
 };
