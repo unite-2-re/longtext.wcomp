@@ -85,8 +85,8 @@
             box-sizing: border-box;
 
             //
-            place-content: safe center;
-            place-items: safe center;
+            place-content: center;
+            place-items: center;
             overflow: hidden;
 
             //
@@ -151,8 +151,8 @@
                 //
                 display: inline;
                 flex-direction: row;
-                place-content: safe center;
-                place-items: safe center;
+                place-content: center;
+                place-items: center;
 
                 //
                 text-align: start;
@@ -249,7 +249,7 @@
                 container-type: inline-size;
 
                 //
-                block-size: max-content;
+                block-size: 100%;
                 min-inline-size: 100%;
                 inline-size: 100%;
                 max-inline-size: 100%;
@@ -326,8 +326,9 @@
                 grid-column: button;
                 grid-row: 1 / 2 span;
 
-                inline-size: 100%;
                 block-size: 100%;
+                inline-size: max(100%, 8rem);
+                min-inline-size: max-content;
 
                 user-select: none;
                 touch-action: none;
@@ -374,14 +375,15 @@
                 inline-size: 100%;
                 block-size: 100%;
 
+                //
                 user-select: none;
                 touch-action: none;
                 pointer-events: none;
 
                 //
-                place-self: safe start start;
-                place-content: safe center start;
-                place-items: safe center start;
+                place-self: start start;
+                place-content: center start;
+                place-items: center start;
                 inset: 0px;
             }
 
@@ -427,31 +429,36 @@
             visibility: collapse;
             opacity: 0;
         }
+    }
+
+    //
+    :host(ui-focustext) {
+        & {
+            position: fixed;
+            z-index : 9999999;
+            inset   : auto;
+            inset-block-end: 0px;
+            inset-inline-start: 0px;
+            inline-size: 100%;
+            max-inline-size: 100%;
+            overflow-anchor: none;
+            box-shadow: 0px 0px 1rem 1px #00000070;
+        }
 
         //
-        &:is(u-focustext) {
-            & {
-                position: fixed;
-                z-index : 9999999;
-                inset   : auto;
-                inset-block-end: 0px;
-                inset-inline-start: 0px;
-                inline-size: 100%;
-                max-inline-size: 100%;
-                overflow-anchor: none;
-                box-shadow: 0px 0px 1rem 1px #00000070;
-            }
+        & { inset-block-end: calc(min(env(keyboard-inset-bottom, 0px), env(keyboard-inset-height, 0px)) / var(--zoom, 1)); }
 
-            //
-            & { inset-block-end: calc(min(env(keyboard-inset-bottom, 0px), env(keyboard-inset-height, 0px)) / var(--zoom, 1)); }
+        //
+        ::slotted(input) {
+            font-size: 1.4rem;
+            overflow-anchor: none;
+            user-select: auto;
+            font-weight: bold;
+        }
 
-            //
-            ::slotted(input) {
-                font-size: 1.4rem;
-                overflow-anchor: none;
-                user-select: auto;
-                font-weight: bold;
-            }
+        //
+        @media not ((hover: none) and (pointer: coarse)) {
+            & { display: none !important; };
         }
     }
 

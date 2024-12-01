@@ -218,23 +218,23 @@ export { UIFocusTextElement };
 //
 const enforceFocus = (ev)=>{
     let element = ev?.target as HTMLInputElement;
-    if (MOC(element, "input[type=\"text\"], u-focustext, u-longtext") && !element.matches("input[type=\"text\"]")) {
+    if (MOC(element, "input[type=\"text\"], ui-focustext, u-longtext") && !element.matches("input[type=\"text\"]")) {
         element = element?.querySelector?.("input[type=\"text\"]") ?? element;
     }
 
     //
     if (matchMedia("(hover: none) and (pointer: coarse)").matches)
     {
-        const dedicated = (document.querySelector("u-focustext") as UIFocusTextElement);
+        const dedicated = (document.querySelector("ui-focustext") as UIFocusTextElement);
         const dInput = dedicated?.querySelector?.("input");
 
         //
-        if (!MOC(element, "u-focustext") && ev?.type == "click") {
+        if (!MOC(element, "ui-focustext") && ev?.type == "click") {
             dInput?.blur?.();
         }
 
         //
-        if (element?.matches?.("input[type=\"text\"]") && !element?.closest?.("u-focustext")) {
+        if (element?.matches?.("input[type=\"text\"]") && !element?.closest?.("ui-focustext")) {
 
             //
             if (["click", "pointerdown", "focus", "focusin"].indexOf(ev?.type || "") >= 0) {
@@ -265,7 +265,7 @@ const whenClick = (ev)=>{
     enforceFocus(ev);
 
     //
-    if (button.matches("u-focustext button") && dedicated.contains(button)) {
+    if (button.matches("ui-focustext button") && dedicated.contains(button)) {
         ev.preventDefault();
         ev.stopPropagation();
         if (document.activeElement == button) { dedicated.restoreFocus(); };
@@ -282,7 +282,7 @@ document.documentElement.addEventListener("pointerdown", whenClick);
 //
 document.documentElement.addEventListener("focusin", (ev)=>{
     const input = ev?.target as HTMLElement;
-    if (input?.matches("input[type=\"text\"]") && !input?.closest?.("u-focustext") && input instanceof HTMLInputElement) {
+    if (input?.matches("input[type=\"text\"]") && !input?.closest?.("ui-focustext") && input instanceof HTMLInputElement) {
         requestIdleCallback(()=>{
             if (document.activeElement == input) { enforceFocus(ev); }
         }, {timeout: 100});

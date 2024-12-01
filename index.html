@@ -38,8 +38,13 @@
     <script src="./test/LTest.ts" type="module"></script>
 
     <ui-longtext style="inline-size: 256px;">
-        <input type="text" label="test" placeholder="test-longtext"/>
+        <input label="test" placeholder="test-longtext" tabindex="0" draggable="false" autocomplete="on" class="u2-input" virtualkeyboardpolicy="manual" type="text" scroll="no"/>
     </ui-longtext>
+
+    <!-- -->
+    <ui-focustext>
+        <input label="test" placeholder="test-longtext" tabindex="-1" draggable="false" autocomplete="on" class="u2-input" type="text" value="" scroll="no"/>
+    </ui-focustext>
 
 </body>
 </html>
