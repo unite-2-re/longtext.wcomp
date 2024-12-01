@@ -95,31 +95,38 @@ class Scrollable {
         }, {passive: false});
 
         //
-        const initialValues = ()=>{
+        const computeScroll = ()=>{
             const scrollable = scr_w?.deref?.();
             const parent = host?.deref?.();
             if (scrollable) {
+
+                // TODO! support of native CSS scroll values (optimization)...
                 parent?.style.setProperty("--scroll-left"  , "" + scrollable.scrollLeft  , "");
                 parent?.style.setProperty("--scroll-top"   , "" + scrollable.scrollTop   , "");
+
+                //
                 parent?.style.setProperty("--scroll-width" , "" + scrollable.scrollWidth , "");
                 parent?.style.setProperty("--scroll-height", "" + scrollable.scrollHeight, "");
                 parent?.style.setProperty("--offset-width" , "" + scrollable.offsetWidth , "");
                 parent?.style.setProperty("--offset-height", "" + scrollable.offsetHeight, "");
-                if ((scrollable?.offsetWidth || 0) >= (scrollable?.scrollWidth || 0)) {
-                    if (!parent?.querySelector(".u2-scroll-box")?.classList?.contains?.("hidden")) {
-                        parent?.querySelector(".u2-scroll-box")?.classList?.add?.("hidden");
+
+                //
+                const scrollBox = parent?.shadowRoot?.querySelector(".u2-scroll-box");
+                if (((scrollable?.scrollWidth || 0) - (scrollable?.offsetWidth || 0)) <= 1) {
+                    if (!scrollBox?.classList?.contains?.("hidden")) {
+                        scrollBox?.classList?.add?.("hidden");
                     }
                 } else {
-                    if (parent?.querySelector(".u2-scroll-box")?.classList?.contains?.("hidden")) {
-                        parent?.querySelector(".u2-scroll-box")?.classList?.remove?.("hidden");
+                    if (scrollBox?.classList?.contains?.("hidden")) {
+                        scrollBox?.classList?.remove?.("hidden");
                     }
                 }
             }
         }
 
         //
-        initialValues();
-        requestIdleCallback(initialValues, {timeout: 1000});
+        computeScroll();
+        requestIdleCallback(computeScroll, {timeout: 1000});
 
         //
         const axis   = 0;
@@ -130,12 +137,12 @@ class Scrollable {
         };
 
         //
-        document.addEventListener("input", initialValues);
-        document.addEventListener("change", initialValues);
+        host?.deref()?.addEventListener("input", computeScroll);
+        host?.deref()?.addEventListener("change", computeScroll);
 
         //
         this.#scrollable.addEventListener("scroll", (ev)=>{
-            initialValues();
+            computeScroll();
 
             //
             /*if (status.pointerId >= 0) {
@@ -148,7 +155,7 @@ class Scrollable {
 
         //
         observeBorderBox(this.#scrollable, (box)=>{
-            initialValues();
+            computeScroll();
 
             //
             const scrollable = scr_w?.deref?.();

@@ -386,13 +386,6 @@
             }
 
             //
-            &.hidden {
-                display: none;
-                visibility: collapse;
-                opacity: 0;
-            }
-
-            //
             .u2-scroll-bar {
                 //
                 transform: none;
@@ -426,6 +419,13 @@
                     translate: calc(var(--percent-x) * (1 - var(--size-coef-x)) * 100cqi) 0px !important;
                 }
             }
+        }
+
+        //
+        :where(.u2-scroll-box, .u2-scroll-bar).hidden {
+            display: none;
+            visibility: collapse;
+            opacity: 0;
         }
 
         //

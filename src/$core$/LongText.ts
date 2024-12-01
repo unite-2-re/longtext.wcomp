@@ -77,8 +77,8 @@ class UILongTextElement extends HTMLElement {
             }
 
             //
-            document.addEventListener("click", whenClick, {capture: true});
-            document.addEventListener("pointerdown", whenClick, {capture: true});
+            document.documentElement.addEventListener("click", whenClick, {capture: true});
+            document.documentElement.addEventListener("pointerdown", whenClick, {capture: true});
 
             //
             makeInput(this);

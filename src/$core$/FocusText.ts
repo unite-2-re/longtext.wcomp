@@ -280,7 +280,7 @@ document.documentElement.addEventListener("click", whenClick);
 document.documentElement.addEventListener("pointerdown", whenClick);
 
 //
-document.addEventListener("focusin", (ev)=>{
+document.documentElement.addEventListener("focusin", (ev)=>{
     const input = ev?.target as HTMLElement;
     if (input?.matches("input[type=\"text\"]") && !input?.closest?.("u-focustext") && input instanceof HTMLInputElement) {
         requestIdleCallback(()=>{
@@ -290,7 +290,7 @@ document.addEventListener("focusin", (ev)=>{
 });
 
 //
-document.addEventListener("select", enforceFocus);
-document.addEventListener("selectionchange", enforceFocus);
-document.addEventListener("selectstart", enforceFocus);
+document.documentElement.addEventListener("select", enforceFocus);
+document.documentElement.addEventListener("selectionchange", enforceFocus);
+document.documentElement.addEventListener("selectstart", enforceFocus);
 
