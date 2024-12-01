@@ -1,14 +1,14 @@
+//
+import { doButtonAction, makeInput } from "./Utils";
+
 // @ts-ignore
 import styles from "./LongText.scss?inline&compress";
 
 // @ts-ignore
 import html from "./LongText.html?raw";
-import { doButtonAction, makeInput } from "./Utils";
 
 //
 const preInit = URL.createObjectURL(new Blob([styles], {type: "text/css"}));
-
-//
 export class UILongTextElement extends HTMLElement {
     #input?: HTMLInputElement | null;
     #selectionRange: [number, number] = [0, 0];
