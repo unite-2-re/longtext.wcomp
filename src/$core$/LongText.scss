@@ -90,7 +90,7 @@
             overflow: hidden;
 
             //
-            display: grid !important;
+            display: inline grid;
             grid-template-columns:
                 [input] minmax(0px, 1fr)
                 [button] minmax(0px, max-content);

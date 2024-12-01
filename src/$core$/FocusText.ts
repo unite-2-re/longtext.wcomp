@@ -3,7 +3,7 @@ import styles from "./LongText.scss?inline&compress";
 
 // @ts-ignore
 import html from "./FocusText.html?raw";
-import { doButtonAction, makeInput } from "./Utils";
+import { doButtonAction, makeInput, MOC } from "./Utils";
 import { computeCaretPositionFromClient, measureInputInFocus } from "./Measure";
 import { zoomOf } from "./Zoom";
 
@@ -11,17 +11,7 @@ import { zoomOf } from "./Zoom";
 const preInit = URL.createObjectURL(new Blob([styles], {type: "text/css"}));
 
 //
-export const MOC = (element: HTMLElement | null, selector: string): boolean => {
-    return (!!element?.matches?.(selector) || !!element?.closest?.(selector));
-};
-
-//
-export const MOCElement = (element: HTMLElement | null, selector: string): HTMLElement | null => {
-    return ((!!element?.matches?.(selector) ? element : null) || element?.closest?.(selector)) as HTMLElement | null;
-};
-
-//
-class UIFocusTextElement extends HTMLElement {
+export class UIFocusTextElement extends HTMLElement {
     #input?: HTMLInputElement | null;
     #focus?: HTMLInputElement | null;
     #selectionRange: [number, number] = [0, 0];
@@ -116,8 +106,6 @@ class UIFocusTextElement extends HTMLElement {
         }
     }
 
-
-
     //
     constructor() {
         super();
@@ -208,89 +196,84 @@ class UIFocusTextElement extends HTMLElement {
 }
 
 //
-//export default FocusTextElement;
-customElements.define("ui-focustext", UIFocusTextElement);
-
-//
-export default () => {};
-export { UIFocusTextElement };
-
-//
-const enforceFocus = (ev)=>{
-    let element = ev?.target as HTMLInputElement;
-    if (MOC(element, "input[type=\"text\"], ui-focustext, u-longtext") && !element.matches("input[type=\"text\"]")) {
-        element = element?.querySelector?.("input[type=\"text\"]") ?? element;
-    }
+export const makeFocusable = (ROOT = document.documentElement)=>{
+    customElements.define("ui-focustext", UIFocusTextElement);
 
     //
-    if (matchMedia("(hover: none) and (pointer: coarse)").matches)
-    {
-        const dedicated = (document.querySelector("ui-focustext") as UIFocusTextElement);
-        const dInput = dedicated?.querySelector?.("input");
-
-        //
-        if (!MOC(element, "ui-focustext") && ev?.type == "click") {
-            dInput?.blur?.();
+    const enforceFocus = (ev)=>{
+        let element = ev?.target as HTMLInputElement;
+        if (MOC(element, "input[type=\"text\"], ui-focustext, u-longtext") && !element.matches("input[type=\"text\"]")) {
+            element = element?.querySelector?.("input[type=\"text\"]") ?? element;
         }
 
         //
-        if (element?.matches?.("input[type=\"text\"]") && !element?.closest?.("ui-focustext")) {
+        if (matchMedia("(hover: none) and (pointer: coarse)").matches)
+        {
+            const dedicated = (ROOT?.querySelector("ui-focustext") as UIFocusTextElement);
+            const dInput = dedicated?.querySelector?.("input");
 
             //
-            if (["click", "pointerdown", "focus", "focusin"].indexOf(ev?.type || "") >= 0) {
-                if (ev && ev?.type == "pointerdown" && dInput) {
-                    const cps = computeCaretPositionFromClient(element, [ev?.clientX / zoomOf(), ev?.clientY / zoomOf()]);
-                    dInput?.setSelectionRange(cps, cps);
-                }
-
-                //
-                if (["click", "focus", "focusin"].indexOf(ev?.type || "") >= 0) {
-                    dedicated?.setVirtualFocus?.(element, ev.type == "click" || ev.type == "pointerdown");
-                }
+            if (!MOC(element, "ui-focustext") && ev?.type == "click") {
+                dInput?.blur?.();
             }
 
             //
-            ev?.preventDefault?.();
-            ev?.stopPropagation?.();
-        }
-    }
-};
+            if (element?.matches?.("input[type=\"text\"]") && !element?.closest?.("ui-focustext")) {
 
-//
-const whenClick = (ev)=>{
-    const button = ev.target as HTMLElement;
-    const dedicated = (document.querySelector("ui-focustext") as UIFocusTextElement);
+                //
+                if (["click", "pointerdown", "focus", "focusin"].indexOf(ev?.type || "") >= 0) {
+                    if (ev && ev?.type == "pointerdown" && dInput) {
+                        const cps = computeCaretPositionFromClient(element, [ev?.clientX / zoomOf(), ev?.clientY / zoomOf()]);
+                        dInput?.setSelectionRange(cps, cps);
+                    }
+
+                    //
+                    if (["click", "focus", "focusin"].indexOf(ev?.type || "") >= 0) {
+                        dedicated?.setVirtualFocus?.(element, ev.type == "click" || ev.type == "pointerdown");
+                    }
+                }
+
+                //
+                ev?.preventDefault?.();
+                ev?.stopPropagation?.();
+            }
+        }
+    };
 
     //
-    enforceFocus(ev);
+    const whenClick = (ev)=>{
+        const button = ev.target as HTMLElement;
+        const dedicated = (ROOT?.querySelector?.("ui-focustext") as UIFocusTextElement);
 
-    //
-    if (button.matches("ui-focustext button") && dedicated.contains(button)) {
-        ev.preventDefault();
-        ev.stopPropagation();
-        if (document.activeElement == button) { dedicated.restoreFocus(); };
-        if (ev.type == "click") {
-            doButtonAction(button, document.activeElement as HTMLInputElement);
+        //
+        enforceFocus(ev);
+
+        //
+        if (button?.matches?.("ui-focustext button") && dedicated?.contains?.(button)) {
+            ev.preventDefault();
+            ev.stopPropagation();
+            if (document.activeElement == button) { dedicated.restoreFocus(); };
+            if (ev.type == "click") {
+                doButtonAction(button, document.activeElement as HTMLInputElement);
+            }
         }
     }
+
+    //
+    ROOT?.addEventListener?.("click", whenClick);
+    ROOT?.addEventListener?.("pointerdown", whenClick);
+    ROOT?.addEventListener?.("select", enforceFocus);
+    ROOT?.addEventListener?.("selectionchange", enforceFocus);
+    ROOT?.addEventListener?.("selectstart", enforceFocus);
+    ROOT?.addEventListener?.("focusin", (ev)=>{
+        const input = ev?.target as HTMLElement;
+        if (input?.matches("input[type=\"text\"]") && !input?.closest?.("ui-focustext") && input instanceof HTMLInputElement) {
+            requestIdleCallback(()=>{
+                if (document.activeElement == input) { enforceFocus(ev); }
+            }, {timeout: 100});
+        }
+    });
 }
 
 //
-document.documentElement.addEventListener("click", whenClick);
-document.documentElement.addEventListener("pointerdown", whenClick);
-
-//
-document.documentElement.addEventListener("focusin", (ev)=>{
-    const input = ev?.target as HTMLElement;
-    if (input?.matches("input[type=\"text\"]") && !input?.closest?.("ui-focustext") && input instanceof HTMLInputElement) {
-        requestIdleCallback(()=>{
-            if (document.activeElement == input) { enforceFocus(ev); }
-        }, {timeout: 100});
-    }
-});
-
-//
-document.documentElement.addEventListener("select", enforceFocus);
-document.documentElement.addEventListener("selectionchange", enforceFocus);
-document.documentElement.addEventListener("selectstart", enforceFocus);
-
+export default makeFocusable;

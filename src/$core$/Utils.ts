@@ -3,6 +3,16 @@ import html from "./LongText.html?raw";
 import Scrollable from "./Scrollable";
 
 //
+export const MOC = (element: HTMLElement | null, selector: string): boolean => {
+    return (!!element?.matches?.(selector) || !!element?.closest?.(selector));
+};
+
+//
+export const MOCElement = (element: HTMLElement | null, selector: string): HTMLElement | null => {
+    return ((!!element?.matches?.(selector) ? element : null) || element?.closest?.(selector)) as HTMLElement | null;
+};
+
+//
 export const doButtonAction = (button, input: HTMLInputElement)=>{
     //
     if (button.matches(".u2-copy") && (input?.selectionStart || 0) < (input?.selectionEnd || 0)) {
@@ -34,14 +44,14 @@ export const doButtonAction = (button, input: HTMLInputElement)=>{
 }
 
 //
-export const makeInput = (host?: HTMLElement)=>{
+export const makeInput = (host?: HTMLElement, ROOT = document.documentElement)=>{
     if (!host) return;
+
+    //
     const input = host?.querySelector?.("input");
     const weak  = new WeakRef(host);
     const scp   = [0, 0];
-    const scp_w = new WeakRef(scp); //scrollPos
-
-    //
+    const scp_w = new WeakRef(scp);
     const enforceFocus = (ev)=>{
         const scrollable = weak?.deref?.();
         const element = ev?.target as HTMLElement;
@@ -60,10 +70,10 @@ export const makeInput = (host?: HTMLElement)=>{
     };
 
     //
-    document.addEventListener("click", enforceFocus);
-    document.addEventListener("select", enforceFocus);
-    document.addEventListener("selectionchange", enforceFocus);
-    document.addEventListener("selectstart", enforceFocus);
+    ROOT?.addEventListener?.("click", enforceFocus);
+    ROOT?.addEventListener?.("select", enforceFocus);
+    ROOT?.addEventListener?.("selectionchange", enforceFocus);
+    ROOT?.addEventListener?.("selectstart", enforceFocus);
 
     //
     {
@@ -90,9 +100,9 @@ export const makeInput = (host?: HTMLElement)=>{
     }
 
     //
-    document?.addEventListener?.("pointerup", whenCancel, {capture: true, passive: true});
-    document?.addEventListener?.("pointercancel", whenCancel, {capture: true, passive: true});
-    document?.addEventListener?.("selectionchange", ()=>{
+    ROOT?.addEventListener?.("pointerup", whenCancel, {capture: true, passive: true});
+    ROOT?.addEventListener?.("pointercancel", whenCancel, {capture: true, passive: true});
+    ROOT?.addEventListener?.("selectionchange", ()=>{
         const box = weak?.deref?.()?.querySelector(".u2-input-box") as HTMLElement;
         const scrollPos = scp_w?.deref?.();
         if (scrollPos) {
@@ -149,4 +159,3 @@ export const makeInput = (host?: HTMLElement)=>{
         box?.addEventListener?.("dragstart", preventDrag);
     }
 }
-

@@ -1,1 +1,4 @@
-import "../dist/longtext.js";
+import init from "../dist/longtext.js";
+
+//
+init();

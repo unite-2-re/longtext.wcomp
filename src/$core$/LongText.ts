@@ -9,7 +9,7 @@ import { doButtonAction, makeInput } from "./Utils";
 const preInit = URL.createObjectURL(new Blob([styles], {type: "text/css"}));
 
 //
-class UILongTextElement extends HTMLElement {
+export class UILongTextElement extends HTMLElement {
     #input?: HTMLInputElement | null;
     #selectionRange: [number, number] = [0, 0];
     #initialized: boolean = false;
@@ -125,8 +125,6 @@ class UILongTextElement extends HTMLElement {
 }
 
 //
-customElements.define("ui-longtext", UILongTextElement);
-
-//
-export default () => {};
-export { UILongTextElement };
+export default (ROOT = document.documentElement) => {
+    customElements.define("ui-longtext", UILongTextElement);
+};
