@@ -1,3 +1,4 @@
+import { setProperty } from "./Utils.js";
 import { zoomOf } from "./Zoom";
 
 //
@@ -101,14 +102,14 @@ class Scrollable {
             if (scrollable) {
 
                 // TODO! support of native CSS scroll values (optimization)...
-                parent?.style.setProperty("--scroll-left"  , "" + scrollable.scrollLeft  , "");
-                parent?.style.setProperty("--scroll-top"   , "" + scrollable.scrollTop   , "");
+                setProperty(parent, "--scroll-left"  , scrollable.scrollLeft  , "");
+                setProperty(parent, "--scroll-top"   , scrollable.scrollTop   , "");
 
                 //
-                parent?.style.setProperty("--scroll-width" , "" + scrollable.scrollWidth , "");
-                parent?.style.setProperty("--scroll-height", "" + scrollable.scrollHeight, "");
-                parent?.style.setProperty("--offset-width" , "" + scrollable.offsetWidth , "");
-                parent?.style.setProperty("--offset-height", "" + scrollable.offsetHeight, "");
+                setProperty(parent, "--scroll-width" , scrollable.scrollWidth , "");
+                setProperty(parent, "--scroll-height", scrollable.scrollHeight, "");
+                setProperty(parent, "--offset-width" , scrollable.offsetWidth , "");
+                setProperty(parent, "--offset-height", scrollable.offsetHeight, "");
 
                 //
                 const scrollBox = parent?.shadowRoot?.querySelector(".u2-scroll-box");
@@ -162,8 +163,8 @@ class Scrollable {
             const parent = host?.deref?.();
 
             //
-            parent?.style.setProperty("--offset-width" , "" + box.inlineSize, "");
-            parent?.style.setProperty("--offset-height", "" + box.blockSize , "");
+            setProperty(parent, "--offset-width" , box.inlineSize, "");
+            setProperty(parent, "--offset-height", box.blockSize , "");
         });
 
         //

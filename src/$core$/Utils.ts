@@ -13,6 +13,24 @@ export const MOCElement = (element: HTMLElement | null, selector: string): HTMLE
 };
 
 //
+export const setProperty = (target, name, value, importance = "")=>{
+    if ("attributeStyleMap" in target) {
+        const raw = target.attributeStyleMap.get(name);
+        const prop = raw?.[0] ?? raw?.value;
+        if (parseFloat(prop) != value && prop != value || prop == null) {
+            //if (raw?.[0] != null) { raw[0] = value; } else
+            if (raw?.value != null) { raw.value = value; } else
+            { target.attributeStyleMap.set(name, value); };
+        }
+    } else {
+        const prop = target?.style?.getPropertyValue?.(name);
+        if (parseFloat(prop) != value && prop != value || prop == null) {
+            target?.style?.setProperty?.(name, value, importance);
+        }
+    }
+}
+
+//
 export const doButtonAction = (button, input: HTMLInputElement)=>{
     //
     if (button.matches(".u2-copy") && (input?.selectionStart || 0) < (input?.selectionEnd || 0)) {
