@@ -1,8 +1,5 @@
 //
-import { doButtonAction, makeInput } from "./Utils";
-
-// @ts-ignore
-import styles from "./LongText.scss?inline&compress";
+import { doButtonAction, makeInput, styles } from "./Utils";
 
 // @ts-ignore
 import html from "./LongText.html?raw";

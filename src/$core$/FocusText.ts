@@ -1,10 +1,7 @@
 //
-import { doButtonAction, makeInput, MOC } from "./Utils";
+import { doButtonAction, makeInput, MOC, styles } from "./Utils";
 import { computeCaretPositionFromClient, measureInputInFocus } from "./Measure";
 import { zoomOf } from "./Zoom";
-
-// @ts-ignore
-import styles from "./LongText.scss?inline&compress";
 
 // @ts-ignore
 import html from "./FocusText.html?raw";

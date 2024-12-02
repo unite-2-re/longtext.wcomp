@@ -1,6 +1,11 @@
-// @ts-ignore
-import html from "./LongText.html?raw";
+//
 import Scrollable from "./Scrollable";
+
+// @ts-ignore
+import styles from "./LongText.scss?inline&compress";
+
+//
+export { styles };
 
 //
 export const MOC = (element: HTMLElement | null, selector: string): boolean => {
