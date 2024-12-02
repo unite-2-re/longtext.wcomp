@@ -15,19 +15,19 @@ export class UIFocusTextElement extends HTMLElement {
     #input?: HTMLInputElement | null;
     #focus?: HTMLInputElement | null;
     #selectionRange: [number, number] = [0, 0];
-    #initialized: boolean = false;
 
     //
+    #initialized: boolean = false;
     constructor() { super(); }
     #initialize() {
         if (!this.#initialized) {
             this.#initialized = true;
+            this.#selectionRange = [0, 0];
 
             //
             const exists = this.querySelector("input");
             const parser = new DOMParser();
             const dom = parser.parseFromString(html, "text/html");
-            //if (exists) { this.removeChild(exists); };
 
             //
             const shadowRoot = this.attachShadow({ mode: "open" });
@@ -41,15 +41,12 @@ export class UIFocusTextElement extends HTMLElement {
             shadowRoot.appendChild(style);
 
             //
-            this.#selectionRange = [0, 0];
+            const next = this.querySelector("input");
+            this.#input = exists ?? next;
             this.#focus = null;
 
             //
-            const next = this.querySelector("input");
-            this.#input = exists ?? next;
-
-            //
-            this?.addEventListener("change", (ev)=>{
+            this?.addEventListener?.("change", (ev)=>{
                 const input = ev.target as HTMLInputElement;
                 if (!CSS.supports("field-sizing", "content") && input?.matches?.("input")) {
                     input?.style?.setProperty("inline-size", (input?.value||"").length + "ch");
@@ -57,7 +54,7 @@ export class UIFocusTextElement extends HTMLElement {
             });
 
             //
-            this?.addEventListener("input", (ev)=>{
+            this?.addEventListener?.("input", (ev)=>{
                 const input = ev.target as HTMLInputElement;
                 if (!CSS.supports("field-sizing", "content") && input?.matches?.("input")) {
                     input?.style?.setProperty("inline-size", (input?.value||"").length + "ch");
@@ -65,7 +62,7 @@ export class UIFocusTextElement extends HTMLElement {
             });
 
             //
-            this?.addEventListener("focusin", (ev)=>{
+            this?.addEventListener?.("focusin", (ev)=>{
                 requestIdleCallback(()=>{
                     this.#focus?.setAttribute?.("disabled", "");
                 }, {timeout: 1000});
@@ -77,19 +74,17 @@ export class UIFocusTextElement extends HTMLElement {
             }
 
             //
-            this?.addEventListener("change", (ev)=>{ this.reflectInput(); });
-            this?.addEventListener("input", (ev)=>{ this.reflectInput(); });
-            this?.addEventListener("focusout", (ev)=>{
+            this?.style?.setProperty?.("display", "none", "important");
+            this?.addEventListener?.("change", (ev)=>{ this.reflectInput(); });
+            this?.addEventListener?.("input", (ev)=>{ this.reflectInput(); });
+            this?.addEventListener?.("focusout", (ev)=>{
                 if ((ev.target as HTMLInputElement)?.matches?.("input")) {
-                    //
                     this.#selectionRange[0] = (ev.target as HTMLInputElement)?.selectionStart || 0;
                     this.#selectionRange[1] = (ev.target as HTMLInputElement)?.selectionEnd   || this.#selectionRange[0];
 
                     //
                     requestIdleCallback(()=>{
                         this.#focus?.removeAttribute?.("disabled");
-
-                        //
                         if (document.activeElement != this.#input) {
                             this.style.setProperty("display", "none", "important");
                             this.#focus = null;
@@ -97,10 +92,6 @@ export class UIFocusTextElement extends HTMLElement {
                     }, {timeout: 100});
                 }
             });
-
-            //
-            this.style.setProperty("display", "none", "important");
-            this.#focus = null;
 
             //
             makeInput(this);
@@ -142,33 +133,31 @@ export class UIFocusTextElement extends HTMLElement {
             const oldActive               = document.activeElement;
 
             //
-            //requestAnimationFrame(()=>{
-                if (oldActive != this.#input) {
-                    this.style.removeProperty("display");
-                    this.#input?.focus?.();
-                };
+            if (oldActive != this.#input) {
+                this.style.removeProperty("display");
+                this.#input?.focus?.();
+            };
 
-                //
-                if (this.#input && this.#focus) {
-                    if (newVal != oldValue) { this.#input.value = newVal; };
-                    if ((oldValue != newVal || onClick) && this.#input != this.#focus) {
-                        if (!(range[0] == range[1] && (!range[1] || ((range[0]||range[1]||0) >= (this.#focus.value.length-1))))) {
-                            this.#input?.setSelectionRange?.(...range);
-                        }
+            //
+            if (this.#input && this.#focus) {
+                if (newVal != oldValue) { this.#input.value = newVal; };
+                if ((oldValue != newVal || onClick) && this.#input != this.#focus) {
+                    if (!(range[0] == range[1] && (!range[1] || ((range[0]||range[1]||0) >= (this.#focus.value.length-1))))) {
+                        this.#input?.setSelectionRange?.(...range);
                     }
                 }
+            }
 
-                //
-                if (onClick) {
-                    const sl  = measureInputInFocus(this.#input);
-                    const box = this?.querySelector(".u2-input-box");
-                    box?.scrollTo?.({
-                        left: (sl?.width ?? box?.scrollLeft ?? 0) - 64,
-                        top: box?.scrollTop ?? 0,
-                        behavior: "smooth"
-                    });
-                }
-            //});
+            //
+            if (onClick) {
+                const sl  = measureInputInFocus(this.#input);
+                const box = this?.querySelector(".u2-input-box");
+                box?.scrollTo?.({
+                    left: (sl?.width ?? box?.scrollLeft ?? 0) - 64,
+                    top: box?.scrollTop ?? 0,
+                    behavior: "smooth"
+                });
+            }
         }
 
         //
