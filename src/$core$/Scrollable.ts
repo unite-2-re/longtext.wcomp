@@ -74,7 +74,6 @@ class Scrollable {
     //
     constructor(scrollable: HTMLElement, host?: WeakRef<HTMLElement>) {
         this.#scrollable = scrollable;
-        const weak = new WeakRef(this);
         const scr_w = new WeakRef(this.#scrollable);
 
         //
@@ -83,10 +82,7 @@ class Scrollable {
             if (scrollable?.matches?.(":where(:hover, :active)")) {
                 ev.preventDefault();
                 ev.stopPropagation();
-
-                //
-                //if (ev.deltaMode == WheelEvent.DOM_DELTA_PIXEL)
-                {
+                {   //
                     scrollable?.scrollBy?.({
                         left: ((ev?.deltaY || 0)+(ev?.deltaX || 0)), top: 0,
                         behavior: "smooth"
@@ -159,10 +155,7 @@ class Scrollable {
             computeScroll();
 
             //
-            const scrollable = scr_w?.deref?.();
             const parent = host?.deref?.();
-
-            //
             setProperty(parent, "--offset-width" , box.inlineSize, "");
             setProperty(parent, "--offset-height", box.blockSize , "");
         });
@@ -182,42 +175,13 @@ class Scrollable {
 
                 //
                 status.pointerId = ev.pointerId;
-                status.pointerLocation =
-                    ev[["clientX", "clientY"][axis]] / zoomOf();
+                status.pointerLocation = ev[["clientX", "clientY"][axis]] / zoomOf();
                 status.virtualScroll = scr_w?.deref?.()?.[["scrollLeft", "scrollTop"][axis]];
 
                 // @ts-ignore
                 ev.target?.setPointerCapture?.(ev.pointerId);
             }
         });
-
-        //
-        document.documentElement.addEventListener("pointermove", (ev) => {
-            if (ev.pointerId == status.pointerId) {
-                ev.stopPropagation();
-                ev.preventDefault();
-
-                //
-                const scrollable = scr_w?.deref?.();
-                const previous = scrollable?.[["scrollLeft", "scrollTop"][axis]];
-                const coord = ev[["clientX", "clientY"][axis]] / zoomOf();
-
-                //
-                status.virtualScroll +=
-                    (coord - status.pointerLocation) /
-                    Math.max(Math.max(Math.min(scrollable?.[["offsetWidth", "offsetHeight"][axis]] / Math.max(scrollable?.[["scrollWidth", "scrollHeight"][axis]], 0.0001), 1), 0), 0.0001);
-                status.pointerLocation = coord;
-
-                //
-                const realShift = status.virtualScroll - previous;
-                if (Math.abs(realShift) >= 0.001) {
-                    scrollable?.scrollBy({
-                        [["left", "top"][axis]]: realShift,
-                        behavior: "instant",
-                    });
-                }
-            }
-        }, {capture: true});
 
         //
         const stopScroll = (ev) => {
@@ -246,6 +210,32 @@ class Scrollable {
         //
         document.documentElement.addEventListener("pointerup", stopScroll, {capture: true});
         document.documentElement.addEventListener("pointercancel", stopScroll, {capture: true});
+        document.documentElement.addEventListener("pointermove", (ev) => {
+            if (ev?.pointerId == status.pointerId) {
+                ev?.stopPropagation?.();
+                ev?.preventDefault?.();
+
+                //
+                const scrollable = scr_w?.deref?.();
+                const previous = scrollable?.[["scrollLeft", "scrollTop"][axis]];
+                const coord = ev[["clientX", "clientY"][axis]] / zoomOf();
+
+                //
+                status.virtualScroll +=
+                    (coord - status.pointerLocation) /
+                    Math.max(Math.max(Math.min(scrollable?.[["offsetWidth", "offsetHeight"][axis]] / Math.max(scrollable?.[["scrollWidth", "scrollHeight"][axis]], 0.0001), 1), 0), 0.0001);
+                status.pointerLocation = coord;
+
+                //
+                const realShift = status.virtualScroll - previous;
+                if (Math.abs(realShift) >= 0.001) {
+                    scrollable?.scrollBy({
+                        [["left", "top"][axis]]: realShift,
+                        behavior: "instant",
+                    });
+                }
+            }
+        }, {capture: true});
     }
 };
 
