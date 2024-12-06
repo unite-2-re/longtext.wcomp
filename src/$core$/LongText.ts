@@ -11,6 +11,7 @@ export class UILongTextElement extends HTMLElement {
     #selectionRange: [number, number] = [0, 0];
 
     //
+    #themeStyle?: HTMLStyleElement;
     #initialized: boolean = false;
     constructor() { super(); }
     #initialize() {
@@ -21,12 +22,20 @@ export class UILongTextElement extends HTMLElement {
             const exists = this.querySelector("input");
             const parser = new DOMParser();
             const dom = parser.parseFromString(html, "text/html");
-            const shadowRoot = this.attachShadow({ mode: "open" });
 
             //
+            const shadowRoot = this.attachShadow({ mode: "open" });
             dom.querySelector("template")?.content?.childNodes.forEach(cp => {
                 shadowRoot.appendChild(cp.cloneNode(true));
             });
+
+            // @ts-ignore
+            const THEME_URL = "/externals/core/theme.js";
+            import(/* @vite-ignore */ "" + `${THEME_URL}`).then((module)=>{
+                // @ts-ignore
+                this.#themeStyle = module?.default?.(this.shadowRoot);
+                if (this.#themeStyle) { this.shadowRoot?.appendChild?.(this.#themeStyle); }
+            }).catch(console.warn.bind(console));
 
             //
             const style = document.createElement("style");

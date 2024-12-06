@@ -14,6 +14,7 @@ export class UIFocusTextElement extends HTMLElement {
     #selectionRange: [number, number] = [0, 0];
 
     //
+    #themeStyle?: HTMLStyleElement;
     #initialized: boolean = false;
     constructor() { super(); }
     #initialize() {
@@ -31,6 +32,14 @@ export class UIFocusTextElement extends HTMLElement {
             dom.querySelector("template")?.content?.childNodes.forEach(cp => {
                 shadowRoot.appendChild(cp.cloneNode(true));
             });
+
+            // @ts-ignore
+            const THEME_URL = "/externals/core/theme.js";
+            import(/* @vite-ignore */ "" + `${THEME_URL}`).then((module)=>{
+                // @ts-ignore
+                this.#themeStyle = module?.default?.(this.shadowRoot);
+                if (this.#themeStyle) { this.shadowRoot?.appendChild?.(this.#themeStyle); }
+            }).catch(console.warn.bind(console));
 
             //
             const style = document.createElement("style");
@@ -71,8 +80,9 @@ export class UIFocusTextElement extends HTMLElement {
             }
 
             //
-            //this?.style?.setProperty?.("display", "none", "important");
-            if (this.dataset.hidden == null) { this.dataset.hidden = ""; };
+            // @ts-ignore
+            navigator?.virtualKeyboard?.hide?.();
+            if (this.dataset.hidden == null) { this.#input?.blur?.(); this.dataset.hidden = ""; };
             this?.addEventListener?.("change", (ev)=>{ this.reflectInput(); });
             this?.addEventListener?.("input", (ev)=>{ this.reflectInput(); });
             this?.addEventListener?.("focusout", (ev)=>{
@@ -85,7 +95,9 @@ export class UIFocusTextElement extends HTMLElement {
                     setTimeout(()=>{
                         this.#focus?.removeAttribute?.("disabled");
                         if (document.activeElement != this.#input) {
-                            if (this.dataset.hidden == null) { this.dataset.hidden = ""; };
+                            // @ts-ignore
+                            navigator?.virtualKeyboard?.hide?.();
+                            if (this.dataset.hidden == null) { this.#input?.blur?.(); this.dataset.hidden = ""; };
                             this.#focus = null;
                         }
                     }, 100);
@@ -101,7 +113,9 @@ export class UIFocusTextElement extends HTMLElement {
     //
     connectedCallback() {
         this.#initialize();
-        if (this.dataset.hidden == null) { this.dataset.hidden = ""; };
+        // @ts-ignore
+        navigator?.virtualKeyboard?.hide?.();
+        if (this.dataset.hidden == null) { this.#input?.blur?.(); this.dataset.hidden = ""; };
         //this.style.setProperty("display", "none", "important");
 
         //
@@ -166,8 +180,9 @@ export class UIFocusTextElement extends HTMLElement {
         //
         setTimeout(()=>{
             if (document.activeElement != this.#input /*|| !this.#focus*/) {
-                //this.style.setProperty("display", "none", "important");
-                if (this.dataset.hidden == null) { this.dataset.hidden = ""; };
+                // @ts-ignore
+                navigator?.virtualKeyboard?.hide?.();
+                if (this.dataset.hidden == null) { this.#input?.blur?.(); this.dataset.hidden = ""; };
                 this.#focus = null;
             }
         }, 100);
