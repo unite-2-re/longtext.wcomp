@@ -71,7 +71,8 @@ export class UIFocusTextElement extends HTMLElement {
             }
 
             //
-            this?.style?.setProperty?.("display", "none", "important");
+            //this?.style?.setProperty?.("display", "none", "important");
+            if (this.dataset.hidden == null) { this.dataset.hidden = ""; };
             this?.addEventListener?.("change", (ev)=>{ this.reflectInput(); });
             this?.addEventListener?.("input", (ev)=>{ this.reflectInput(); });
             this?.addEventListener?.("focusout", (ev)=>{
@@ -80,13 +81,15 @@ export class UIFocusTextElement extends HTMLElement {
                     this.#selectionRange[1] = (ev.target as HTMLInputElement)?.selectionEnd   || this.#selectionRange[0];
 
                     //
-                    requestIdleCallback(()=>{
+                    //requestIdleCallback(()=>{
+                    setTimeout(()=>{
                         this.#focus?.removeAttribute?.("disabled");
                         if (document.activeElement != this.#input) {
-                            this.style.setProperty("display", "none", "important");
+                            if (this.dataset.hidden == null) { this.dataset.hidden = ""; };
                             this.#focus = null;
                         }
-                    }, {timeout: 100});
+                    }, 100);
+                    //}, {timeout: 100});
                 }
             });
 
@@ -98,7 +101,8 @@ export class UIFocusTextElement extends HTMLElement {
     //
     connectedCallback() {
         this.#initialize();
-        this.style.setProperty("display", "none", "important");
+        if (this.dataset.hidden == null) { this.dataset.hidden = ""; };
+        //this.style.setProperty("display", "none", "important");
 
         //
         if (!CSS.supports("field-sizing", "content")) {
@@ -131,8 +135,10 @@ export class UIFocusTextElement extends HTMLElement {
 
             //
             if (oldActive != this.#input) {
-                this.style.removeProperty("display");
-                this.#input?.focus?.();
+                if (this.dataset.hidden != null) { delete this.dataset.hidden; };
+                requestIdleCallback(()=>{
+                    this.#input?.focus?.();
+                }, {timeout: 100});
             };
 
             //
@@ -158,16 +164,19 @@ export class UIFocusTextElement extends HTMLElement {
         }
 
         //
-        requestIdleCallback(()=>{
-            if (document.activeElement != this.#input || !this.#focus) {
-                this.style.setProperty("display", "none", "important");
+        setTimeout(()=>{
+            if (document.activeElement != this.#input /*|| !this.#focus*/) {
+                //this.style.setProperty("display", "none", "important");
+                if (this.dataset.hidden == null) { this.dataset.hidden = ""; };
+                this.#focus = null;
             }
-        }, {timeout: 100});
+        }, 100);
     }
 
     //
     restoreFocus() {
-        if (this.#focus && document.activeElement != this.#input && this.style.getPropertyValue("display") != "none") {
+        if (this.#focus && document.activeElement != this.#input && this.dataset.hidden == null) {
+            this.#input?.removeAttribute?.("disabled");
             this.#input?.setSelectionRange?.(...(this.#selectionRange || [0, 0]));
             this.#input?.focus?.();
         }
@@ -181,8 +190,8 @@ export const makeFocusable = (ROOT = document.documentElement)=>{
     //
     const enforceFocus = (ev)=>{
         let element = ev?.target as HTMLInputElement;
-        if (MOC(element, "input[type=\"text\"], ui-focustext, ui-longtext") && !element.matches("input[type=\"text\"]")) {
-            element = element?.querySelector?.("input[type=\"text\"]") ?? element;
+        if (MOC(element, "input[type=\"text\"], ui-focustext, ui-longtext")) {
+            element = (element.matches("input[type=\"text\"]") ? element : element?.querySelector?.("input[type=\"text\"]")) ?? element;
         }
 
         //
@@ -190,14 +199,12 @@ export const makeFocusable = (ROOT = document.documentElement)=>{
         {
             const dedicated = (ROOT?.querySelector("ui-focustext") as UIFocusTextElement);
             const dInput = dedicated?.querySelector?.("input");
-
-            //
-            if (!MOC(element, "ui-focustext") && ev?.type == "click") {
+            if (!MOC(element, "ui-focustext, input, ui-longtext") && ev?.type == "click") {
                 dInput?.blur?.();
             }
 
             //
-            if (element?.matches?.("input[type=\"text\"]") && !element?.closest?.("ui-focustext")) {
+            if (element?.matches?.("input[type=\"text\"]") && !MOC(element, "ui-focustext")) {
 
                 //
                 if (["click", "pointerdown", "focus", "focusin"].indexOf(ev?.type || "") >= 0) {
@@ -247,8 +254,8 @@ export const makeFocusable = (ROOT = document.documentElement)=>{
     ROOT?.addEventListener?.("focusin", (ev)=>{
         const input = ev?.target as HTMLElement;
         if (input?.matches("input[type=\"text\"]") && !input?.closest?.("ui-focustext") && input instanceof HTMLInputElement) {
-            requestIdleCallback(()=>{
-                if (document.activeElement == input) { enforceFocus(ev); }
+            requestIdleCallback(() => {
+                if (document.activeElement == input && input.matches("input")) { enforceFocus(ev); }
             }, {timeout: 100});
         }
     });
