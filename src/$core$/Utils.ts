@@ -38,12 +38,12 @@ export const setProperty = (target, name, value, importance = "")=>{
 //
 export const doButtonAction = (button, input: HTMLInputElement)=>{
     //
-    if (button.matches(".u2-copy") && (input?.selectionStart || 0) < (input?.selectionEnd || 0)) {
-        navigator.clipboard.writeText(input.value.substring(input.selectionStart || 0, input.selectionEnd || 0));
+    if (button.matches(".u2-copy") && input?.matches?.("input") && (input?.selectionStart != input?.selectionEnd)) {
+        navigator.clipboard.writeText(input.value.substring(input.selectionStart || 0, input.selectionEnd || input.selectionStart || 0));
     }
 
     //
-    if (button.matches(".u2-paste") && (input?.selectionStart || 0) <= (input?.selectionEnd || 0)) {
+    if (button.matches(".u2-paste") && input?.selectionStart != null) {
         navigator.clipboard.readText().then(
             (clipText) => {
                 const oldStart = input?.selectionStart || 0;
@@ -52,8 +52,8 @@ export const doButtonAction = (button, input: HTMLInputElement)=>{
 
                 //
                 input?.setSelectionRange(
-                    oldStart + clipText.length,
-                    oldStart + clipText.length
+                    oldStart + (clipText?.length||0),
+                    oldStart + (clipText?.length||0)
                 );
 
                 //

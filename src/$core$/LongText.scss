@@ -149,6 +149,7 @@
                 //pointer-events: none;
 
                 //
+                z-index: 1;
                 display: inline;
                 flex-direction: row;
                 place-content: center;
@@ -232,6 +233,7 @@
             & {
                 //place-self: start;
                 inset: 0px;
+                z-index: 1;
 
                 //
                 scroll-timeline-name: --axis-scroll-x;
@@ -333,9 +335,11 @@
                 user-select: none;
                 touch-action: none;
                 pointer-events: none;
+                overflow: hidden;
 
                 //
                 inset: 0px;
+                z-index: 9;
             }
 
             //
@@ -344,8 +348,7 @@
                 outline: none 0px transparent;
                 border: none 0px transparent;
                 margin: 0px;
-
-                //
+                z-index: 10;
                 padding: 1rem;
                 aspect-ratio: 1 / 1;
                 inline-size: max-content;

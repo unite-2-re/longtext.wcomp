@@ -9,11 +9,12 @@ import html from "./FocusText.html?raw";
 //
 const preInit = URL.createObjectURL(new Blob([styles], {type: "text/css"}));
 export class UIFocusTextElement extends HTMLElement {
-    #input?: HTMLInputElement | null;
+    //#input?: HTMLInputElement | null;
     #focus?: HTMLInputElement | null;
     #selectionRange: [number, number] = [0, 0];
 
     //
+    get #input(): HTMLInputElement|null { return this.querySelector("input"); };
     #themeStyle?: HTMLStyleElement;
     #initialized: boolean = false;
     constructor() { super(); }
@@ -47,8 +48,8 @@ export class UIFocusTextElement extends HTMLElement {
             shadowRoot.appendChild(style);
 
             //
-            const next = this.querySelector("input");
-            this.#input = exists ?? next;
+            //const next = this.querySelector("input");
+            //this.#input = exists ?? next;
             this.#focus = null;
 
             //
@@ -107,6 +108,19 @@ export class UIFocusTextElement extends HTMLElement {
 
             //
             makeInput(this);
+
+            //
+            this?.shadowRoot?.addEventListener("click", (ev)=>{
+                const button = ev.target as HTMLElement;
+                if (button?.matches?.("button") && this?.shadowRoot?.contains?.(button)) {
+                    ev.preventDefault();
+                    ev.stopPropagation();
+
+                    //
+                    if (document.activeElement != this.#input) { this.restoreFocus(); };
+                    if (ev.type == "click") { doButtonAction(button, (document.activeElement as HTMLInputElement) || this.#input); }
+                }
+            });
         }
     }
 
@@ -202,6 +216,12 @@ export class UIFocusTextElement extends HTMLElement {
 export const makeFocusable = (ROOT = document.documentElement)=>{
     customElements.define("ui-focustext", UIFocusTextElement);
 
+    // @ts-ignore
+    navigator.permissions.query({ name: 'clipboard-write' })?.catch?.(console.warn.bind(console));
+
+    // @ts-ignore
+    navigator.permissions.query({ name: 'clipboard-read' })?.catch?.(console.warn.bind(console));
+
     //
     const enforceFocus = (ev)=>{
         let element = ev?.target as HTMLInputElement;
@@ -243,21 +263,11 @@ export const makeFocusable = (ROOT = document.documentElement)=>{
 
     //
     const whenClick = (ev)=>{
-        const button = ev.target as HTMLElement;
-        const dedicated = (ROOT?.querySelector?.("ui-focustext") as UIFocusTextElement);
+        //const button = ev.target as HTMLElement;
+        //const dedicated = (ROOT?.querySelector?.("ui-focustext") as UIFocusTextElement);
 
         //
         enforceFocus(ev);
-
-        //
-        if (button?.matches?.("ui-focustext button") && dedicated?.contains?.(button)) {
-            ev.preventDefault();
-            ev.stopPropagation();
-            if (document.activeElement == button) { dedicated.restoreFocus(); };
-            if (ev.type == "click") {
-                doButtonAction(button, document.activeElement as HTMLInputElement);
-            }
-        }
     }
 
     //

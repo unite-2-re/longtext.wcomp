@@ -7,10 +7,11 @@ import html from "./LongText.html?raw";
 //
 const preInit = URL.createObjectURL(new Blob([styles], {type: "text/css"}));
 export class UILongTextElement extends HTMLElement {
-    #input?: HTMLInputElement | null;
+    //#input?: HTMLInputElement | null;
     #selectionRange: [number, number] = [0, 0];
 
     //
+    get #input(): HTMLInputElement|null { return this.querySelector("input"); };
     #themeStyle?: HTMLStyleElement;
     #initialized: boolean = false;
     constructor() { super(); }
@@ -43,8 +44,8 @@ export class UILongTextElement extends HTMLElement {
             shadowRoot.appendChild(style);
 
             //
-            const next = this.querySelector("input");
-            this.#input = exists ?? next;
+            //const next = this.querySelector("input");
+            //this.#input = exists ?? next;
 
             //
             this?.addEventListener?.("change", (ev)=>{
@@ -94,11 +95,12 @@ export class UILongTextElement extends HTMLElement {
 //
 export default (ROOT = document.documentElement) => {
     const whenClick = (ev)=>{
+        // broken...
         const button = ev.target as any;
         const input  = button?.closest?.("ui-longtext");
 
         //
-        if (button?.matches?.("ui-longtext button") && input?.contains?.(button)) {
+        /*if (button?.matches?.("ui-longtext button") && input?.contains?.(button)) {
             ev?.preventDefault?.();
             ev?.stopPropagation?.();
 
@@ -107,7 +109,7 @@ export default (ROOT = document.documentElement) => {
             if (ev?.type == "click") {
                 doButtonAction(button, document.activeElement as HTMLInputElement);
             }
-        }
+        }*/
     }
 
     //
