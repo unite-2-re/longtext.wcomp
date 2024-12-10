@@ -267,8 +267,8 @@
                 overflow-inline: auto;
 
                 //
-                scrollbar-width: none;
-                scrollbar-gutter: stable;
+                scrollbar-width: none !important;
+                scrollbar-gutter: stable !important;
                 scroll-behavior: smooth;
                 touch-action: pan-x;
 
