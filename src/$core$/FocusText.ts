@@ -84,8 +84,8 @@ export class UIFocusTextElement extends HTMLElement {
             // @ts-ignore
             navigator?.virtualKeyboard?.hide?.();
             if (this.dataset.hidden == null) { this.#input?.blur?.(); this.dataset.hidden = ""; };
-            this?.addEventListener?.("change", (ev)=>{ this.reflectInput(); });
-            this?.addEventListener?.("input", (ev)=>{ this.reflectInput(); });
+            this?.addEventListener?.("change", (ev)=>{ this.reflectInput(null, ev.type); });
+            this?.addEventListener?.("input", (ev)=>{ this.reflectInput(null, ev.type); });
             this?.addEventListener?.("focusout", (ev)=>{
                 if ((ev.target as HTMLInputElement)?.matches?.("input")) {
                     this.#selectionRange[0] = (ev.target as HTMLInputElement)?.selectionStart || 0;
@@ -139,10 +139,13 @@ export class UIFocusTextElement extends HTMLElement {
     }
 
     //
-    reflectInput(where?: HTMLInputElement | null) {
+    reflectInput(where?: HTMLInputElement | null, type = "change") {
         if ((where ??= this.#focus) && where != this.#input) {
             const newVal = this.#input?.value ?? where.value;
-            if (newVal != where.value) { where.value = newVal; };
+            if (newVal != where.value) {
+                where.value = newVal;
+                where.dispatchEvent(new Event(type, { bubbles: true }));
+            };
         }
     }
 

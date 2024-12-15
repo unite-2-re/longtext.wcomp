@@ -10,13 +10,14 @@ export const measureText = (text, element)=>{
 
     //
     if (ctx && style) {
-        const fontWeight = style.getPropertyValue('font-weight') || 'normal';
-        const fontSize   = style.getPropertyValue('font-size')   || '16px';
-        const fontFamily = style.getPropertyValue('font-family') || 'Times New Roman';
+        const fontWeight  = style.getPropertyValue('font-weight') || 'normal';
+        const fontSize    = style.getPropertyValue('font-size')   || '16px';
+        const fontFamily  = style.getPropertyValue('font-family') || 'Times New Roman';
+        const fontStretch = (style.getPropertyValue('font-stretch') || 'normal') as CanvasFontStretch;
 
         //
+        try { ctx.fontStretch     = fontStretch.includes("%") ? "normal" : fontStretch; } catch(e) {};
         try { ctx.letterSpacing   = (style.getPropertyValue('letter-spacing') || 'normal'); } catch(e) {};
-        try { ctx.fontStretch     = (style.getPropertyValue('font-stretch') || 'normal') as CanvasFontStretch; } catch(e) {};
         try { ctx.fontKerning     = (style.getPropertyValue('font-kerning') || 'auto') as CanvasFontKerning; } catch(e) {};
         try { ctx.fontVariantCaps = (style.getPropertyValue('font-variant-caps') || 'normal') as CanvasFontVariantCaps; } catch(e) {};
         try { ctx.font = `${fontWeight} ${fontSize} ${fontFamily}`; } catch(e) {};
@@ -40,16 +41,17 @@ export const computeCaretPosition = (input: HTMLInputElement, point: [number, nu
 
     //
     if (ctx && style) {
-        const fontWeight = style.getPropertyValue('font-weight') || 'normal';
-        const fontSize = style.getPropertyValue('font-size') || '16px';
-        const fontFamily = style.getPropertyValue('font-family') || 'Times New Roman';
+        const fontWeight  = style.getPropertyValue('font-weight') || 'normal';
+        const fontSize    = style.getPropertyValue('font-size')   || '16px';
+        const fontFamily  = style.getPropertyValue('font-family') || 'Times New Roman';
+        const fontStretch = (style.getPropertyValue('font-stretch') || 'normal') as CanvasFontStretch;
 
         //
-        ctx.letterSpacing = style.getPropertyValue('letter-spacing') ?? 'normal';
-        ctx.fontStretch = (style.getPropertyValue('font-stretch') ?? 'normal') as CanvasFontStretch;
-        ctx.fontKerning = (style.getPropertyValue('font-kerning') ?? 'auto') as CanvasFontKerning;
-        ctx.fontVariantCaps = (style.getPropertyValue('font-variant-caps') ?? 'normal') as CanvasFontVariantCaps;
-        ctx.font = `${fontWeight} ${fontSize} ${fontFamily}`;
+        try { ctx.fontStretch     = fontStretch.includes("%") ? "normal" : fontStretch; } catch(e) {};
+        try { ctx.letterSpacing   = (style.getPropertyValue('letter-spacing') || 'normal'); } catch(e) {};
+        try { ctx.fontKerning     = (style.getPropertyValue('font-kerning') || 'auto') as CanvasFontKerning; } catch(e) {};
+        try { ctx.fontVariantCaps = (style.getPropertyValue('font-variant-caps') || 'normal') as CanvasFontVariantCaps; } catch(e) {};
+        try { ctx.font = `${fontWeight} ${fontSize} ${fontFamily}`; } catch(e) {};
 
         //
         let currentWidth = 0;
