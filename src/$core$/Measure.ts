@@ -11,19 +11,20 @@ export const measureText = (text, element)=>{
     //
     if (ctx && style) {
         const fontWeight = style.getPropertyValue('font-weight') || 'normal';
-        const fontSize = style.getPropertyValue('font-size') || '16px';
+        const fontSize   = style.getPropertyValue('font-size')   || '16px';
         const fontFamily = style.getPropertyValue('font-family') || 'Times New Roman';
 
         //
-        ctx.letterSpacing = style.getPropertyValue('letter-spacing') ?? 'normal';
-        ctx.fontStretch = (style.getPropertyValue('font-stretch') ?? 'normal') as CanvasFontStretch;
-        ctx.fontKerning = (style.getPropertyValue('font-kerning') ?? 'auto') as CanvasFontKerning;
-        ctx.fontVariantCaps = (style.getPropertyValue('font-variant-caps') ?? 'normal') as CanvasFontVariantCaps;
-        ctx.font = `${fontWeight} ${fontSize} ${fontFamily}`;
-
-        //
-        return ctx.measureText(text);
+        try { ctx.letterSpacing   = (style.getPropertyValue('letter-spacing') || 'normal'); } catch(e) {};
+        try { ctx.fontStretch     = (style.getPropertyValue('font-stretch') || 'normal') as CanvasFontStretch; } catch(e) {};
+        try { ctx.fontKerning     = (style.getPropertyValue('font-kerning') || 'auto') as CanvasFontKerning; } catch(e) {};
+        try { ctx.fontVariantCaps = (style.getPropertyValue('font-variant-caps') || 'normal') as CanvasFontVariantCaps; } catch(e) {};
+        try { ctx.font = `${fontWeight} ${fontSize} ${fontFamily}`; } catch(e) {};
+        try { return ctx.measureText(text); } catch(e) {};
     }
+
+    //
+    return 0;
 }
 
 //
