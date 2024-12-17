@@ -1,52 +1,76 @@
-@layer u2-long-text {
 
+
+@scope(:host, :scope, :root)
+{
     //
     @property --scroll-left   { initial-value: 0; syntax: "<number>"; inherits: true; };
     @property --scroll-top    { initial-value: 0; syntax: "<number>"; inherits: true; };
     @property --scroll-width  { initial-value: 0; syntax: "<number>"; inherits: true; };
     @property --scroll-height { initial-value: 0; syntax: "<number>"; inherits: true; };
+    @property --scroll-size   { initial-value: 1; syntax: "<number>"; inherits: true; };
+    @property --scroll-base   { initial-value: 1; syntax: "<number>"; inherits: true; };
+    @property --scroll-coef   { initial-value: 1px; syntax: "<length-percentage>"; inherits: true; };
+
+    //
     @property --offset-width  { initial-value: 0; syntax: "<number>"; inherits: true; };
     @property --offset-height { initial-value: 0; syntax: "<number>"; inherits: true; };
 
     //
     @property --size-coef-x { initial-value: 0; syntax: "<number>"; inherits: true; };
     @property --size-coef-y { initial-value: 0; syntax: "<number>"; inherits: true; };
+    @property --size-coef { initial-value: 1; syntax: "<number>"; inherits: true; };
+    @property --size-base { initial-value: 1px; syntax: "<length-percentage>"; inherits: true; };
 
     //
     @property --percent-x { initial-value: 0; syntax: "<number>"; inherits: true; };
     @property --percent-y { initial-value: 0; syntax: "<number>"; inherits: true; };
 
     //
-    @keyframes by-scroll-x {
-        0%   { --percent-x: 0.0; }
-        100% { --percent-x: 1.0; }
+    @property --scrollbar-color {
+        syntax: "<color>";
+        inherits: true;
+        initial-value: #10101040;
     };
+};
+
+//
+@keyframes by-scroll-x
+{
+    0%   { --percent-x: 0.0; }
+    100% { --percent-x: 1.0; }
+};
+
+//
+@keyframes scroll-side
+{
+    0% {
+        mask-image: linear-gradient(to left, black, white 1rem);
+    }
+
+    1% {
+        mask-image:
+            linear-gradient(to left, black, white 1rem),
+            linear-gradient(to right, black, white 1rem);
+    }
+
+    99% {
+        mask-image:
+            linear-gradient(to left, black, white 1rem),
+            linear-gradient(to right, black, white 1rem);
+    }
+
+    100% {
+        mask-image: linear-gradient(to right, black, white 1rem);
+    }
+};
+
+//
+@layer u2-long-text
+{
 
     //
-    @keyframes scroll-side {
-        0% {
-            mask-image: linear-gradient(to left, black, white 1rem);
-        }
-
-        1% {
-            mask-image:
-                linear-gradient(to left, black, white 1rem),
-                linear-gradient(to right, black, white 1rem);
-        }
-
-        99% {
-            mask-image:
-                linear-gradient(to left, black, white 1rem),
-                linear-gradient(to right, black, white 1rem);
-        }
-
-        100% {
-            mask-image: linear-gradient(to right, black, white 1rem);
-        }
-    };
-
-    //
-    *[inert] {
+    *[inert]
+    {
         pointer-events: none !important;
         interactivity: inert !important;
         user-select: none !important;
@@ -54,14 +78,15 @@
     }
 
     //
-    :host {
+    :host
+    {
         & {
             --size-coef-x: clamp(0, calc(var(--offset-width)  / var(--scroll-width) ), 1);
             --size-coef-y: clamp(0, calc(var(--offset-height) / var(--scroll-height)), 1);
+            --scrollbar-color: #10101040;
+            --percent-x: 0.0;
+            --percent-y: 0.0;
         }
-
-        // decoration...
-        //& { outline: solid 1px gray; };
 
         //
         & {
@@ -81,7 +106,6 @@
             max-block-size: 100%;
             block-size: max-content;
             min-inline-size: 0px;
-            //min-inline-size: 100%;
             box-sizing: border-box;
 
             //
@@ -100,24 +124,22 @@
 
             //
             overflow-anchor: auto;
+            text-overflow: clip;
 
             //
             -webkit-user-drag: none;
             -moz-user-drag: none;
-            user-drag: none;
 
             //
+            user-select: none;
             white-space: nowrap;
-            text-overflow: clip;
             word-break: keep-all;
             word-wrap: normal;
             flex-wrap: nowrap;
 
             //
-            user-select: none;
-
-            //
-            timeline-scope: --axis-scroll-x;
+            user-drag: none;
+            timeline-scope: --tm-x;
         }
 
         //
@@ -135,18 +157,15 @@
         }
 
         //
-        ::slotted(input) {
-
-            //
+        ::slotted(input)
+        {
             & {
                 inset: 0px;
                 user-select: auto;
-                //user-select: all;
                 overflow: hidden;
 
                 //
                 pointer-events: auto;
-                //pointer-events: none;
 
                 //
                 z-index: 1;
@@ -166,9 +185,6 @@
                 //
                 container-type: normal;
                 contain: none;
-
-                // IMPORTANT!
-                field-sizing: content;
 
                 //
                 font-stretch: ultra-condensed;
@@ -209,7 +225,6 @@
                 //
                 -webkit-user-drag: none;
                 -moz-user-drag: none;
-                user-drag: none;
 
                 //
                 white-space: nowrap;
@@ -217,10 +232,15 @@
                 word-break: keep-all;
                 word-wrap: normal;
                 flex-wrap: nowrap;
+
+                // IMPORTANT!
+                field-sizing: content;
+                user-drag: none;
             }
 
             //
-            &[readonly], &[disabled], &[inert], &:read-only, &:disabled {
+            &[readonly], &[disabled], &[inert], &:read-only, &:disabled
+            {
                 user-select: none;
                 pointer-events: none;
             }
@@ -236,7 +256,7 @@
                 z-index: 1;
 
                 //
-                scroll-timeline-name: --axis-scroll-x;
+                scroll-timeline-name: --tm-x;
                 scroll-timeline-axis: inline;
 
                 //
@@ -296,24 +316,19 @@
                 background-color: transparent;
                 mask-mode: luminance;
                 mask-composite: intersect;
-                //
-                //scroll-snap-type: x proximity;
-                //scroll-snap-align: center;
             }
 
             //
-            &:has(*::selection) {
-                overflow-x: hidden !important;
-            }
+            &:has(*::selection)
+            { overflow-x: hidden !important; }
 
             //
-            @supports (animation-timeline: scroll()) {
+            @supports (animation-timeline: scroll())
+            {
                 & {
-                    //background-image: linear-gradient(to left, #00000070, #00000070 1rem, transparent 1rem);
-                    //scroll-timeline: --visible inline;
                     transition-behavior: allow-discrete;
                     animation-name: scroll-side;
-                    animation-timeline: --axis-scroll-x;
+                    animation-timeline: --tm-x;
                     animation-range: contain;
                     animation-fill-mode: both;
                     animation-timing-function: linear;
@@ -367,6 +382,13 @@
         //
         .u2-scroll-box {
             & {
+                --size-base  : 100cqi;
+                --size-coef  : calc(tan(atan2(var(--size-base, 1px), 1px)) / var(--scroll-size, 1));
+                --scroll-coef: calc((tan(atan2(var(--size-base, 1px), 1px)) - 16) / var(--scroll-size, 1));
+            };
+
+            //
+            & {
                 transform: none;
                 container-type: size;
                 contain: content;
@@ -388,46 +410,55 @@
                 place-content: center start;
                 place-items: center start;
                 inset: 0px;
-            }
+            };
 
             //
             .u2-scroll-bar {
-                //
-                transform: none;
-                place-self: start start;
-                inset: 0px;
+                & { //
+                    transform: none;
+                    place-self: start start;
+                    inset: 0px;
+
+                    //
+                    animation-name: by-scroll-x;
+                    animation-timing-function: linear;
+                    animation-fill-mode: both;
+                    animation-duration: 1ms;
+                    animation-range: contain;
+                    animation-timeline: --tm-x;
+                    cursor: pointer;
+
+                    //
+                    inline-size: calc(100% * var(--size-coef-x));
+                    block-size: 100%;
+
+                    //
+                    background-color: #10101040;
+
+                    //
+                    user-select: none;
+                    touch-action: none;
+                    pointer-events: auto;
+                };
 
                 //
-                animation-name: by-scroll-x;
-                animation-timeline: --axis-scroll-x;
-                animation-timing-function: linear;
-                animation-fill-mode: both;
-                animation-duration: 1ms;
-                animation-range: contain;
-                cursor: pointer;
+                @supports(timeline-scope: --tm-x, --tm-y)
+                {
+                    --scroll-left: calc(var(--percent-x, 0) * max(calc(var(--scroll-size, 1) - tan(atan2(var(--size-base, 1px), 1px))), 0));
+                };
 
                 //
-                inline-size: calc(100% * var(--size-coef-x));
-                block-size: 100%;
-
-                //
-                background-color: #10101040;
-
-                //
-                user-select: none;
-                touch-action: none;
-                pointer-events: auto;
-
-                //
-                translate: calc(var(--scroll-left) * var(--size-coef-x) * 1px) 0px !important;
-                @supports(timeline-scope: --axis-scroll-x) {
-                    translate: calc(var(--percent-x) * (1 - var(--size-coef-x)) * 100cqi) 0px !important;
-                }
+                & {
+                    block-size: 100%;
+                    inline-size: min(calc(100% * var(--size-coef, 1)), 100%);
+                    translate: calc(var(--scroll-left, 0) * var(--scroll-coef, 1) * 1px) 0px;
+                };
             }
         }
 
         //
-        :where(.u2-scroll-box, .u2-scroll-bar).hidden {
+        :where(.u2-scroll-box, .u2-scroll-bar).hidden
+        {
             display: none;
             visibility: collapse;
             opacity: 0;
@@ -435,7 +466,8 @@
     }
 
     //
-    :host(ui-focustext) {
+    :host(ui-focustext)
+    {
         & {
             position: fixed;
             z-index : 9999999;
@@ -452,7 +484,8 @@
         & { inset-block-end: calc(min(env(keyboard-inset-bottom, 0px), env(keyboard-inset-height, 0px)) / var(--zoom, 1)); }
 
         //
-        ::slotted(input) {
+        ::slotted(input)
+        {
             font-size: 1.4rem;
             overflow-anchor: none;
             user-select: auto;
@@ -460,12 +493,12 @@
         }
 
         //
-        @media not ((hover: none) and (pointer: coarse)) {
-            & { display: none !important; };
-        }
+        @media not ((hover: none) and (pointer: coarse))
+        { & { display: none !important; }; }
     }
 
     //
-    :host([data-hidden]) { display: none !important; };
+    :host([data-hidden])
+        { display: none !important; };
 
 }

@@ -1,5 +1,8 @@
 //
-import Scrollable from "./Scrollable";
+//import Scrollable from "./Scrollable";
+
+// @ts-ignore
+import { ScrollBar } from "/externals/lib/agate.js";
 
 // @ts-ignore
 import styles from "./LongText.scss?inline&compress";
@@ -100,13 +103,22 @@ export const makeInput = (host?: HTMLElement, ROOT = document.documentElement)=>
 
     //
     {
+        const bar = host?.shadowRoot?.querySelector?.(".u2-scroll-box");
         const box = host?.shadowRoot?.querySelector?.(".u2-input-box") as HTMLElement;
         const scrollPos = scp;
+
+        //
         if (scrollPos) {
             scrollPos[0] = box?.scrollLeft || 0;
             scrollPos[1] = box?.scrollTop  || 0;
         }
-        new Scrollable(box, new WeakRef(host));
+
+        //
+        new ScrollBar({
+            content: box,
+            holder: host,
+            scrollbar: bar
+        }, 0);
     }
 
     //
@@ -149,13 +161,6 @@ export const makeInput = (host?: HTMLElement, ROOT = document.documentElement)=>
     }
 
     //
-    {
-        const box = host?.shadowRoot?.querySelector?.(".u2-input-box") as HTMLElement;
-        box?.addEventListener?.("scroll"   , preventScroll, {capture: true, passive: true});
-        box?.addEventListener?.("scrollend", preventScroll, {capture: true, passive: true});
-    }
-
-    //
     const toFocus = ()=>{
         if (document.activeElement != input) {
             input?.removeAttribute?.("readonly");
@@ -171,14 +176,14 @@ export const makeInput = (host?: HTMLElement, ROOT = document.documentElement)=>
         }
     }
 
-    //
-    input?.addEventListener?.("dragstart", preventDrag);
-    host?.addEventListener?.("dragstart", preventDrag);
-    host?.addEventListener?.("focus", toFocus);
-
     {   //
         const box = host?.shadowRoot?.querySelector?.(".u2-input-box") as HTMLElement;
-        box?.addEventListener?.("focus", toFocus);
+        box?.addEventListener?.("scroll"   , preventScroll, {capture: true, passive: true});
+        box?.addEventListener?.("scrollend", preventScroll, {capture: true, passive: true});
         box?.addEventListener?.("dragstart", preventDrag);
+        box?.addEventListener?.("focus", toFocus);
+        host?.addEventListener?.("dragstart", preventDrag);
+        host?.addEventListener?.("focus", toFocus);
+        input?.addEventListener?.("dragstart", preventDrag);
     }
 }

@@ -25,7 +25,7 @@ export const measureText = (text, element)=>{
     }
 
     //
-    return 0;
+    return { width: null };
 }
 
 //

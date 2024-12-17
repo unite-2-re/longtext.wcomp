@@ -94,28 +94,5 @@ export class UILongTextElement extends HTMLElement {
 
 //
 export default (ROOT = document.documentElement) => {
-    const whenClick = (ev)=>{
-        // broken...
-        const button = ev.target as any;
-        const input  = button?.closest?.("ui-longtext");
-
-        //
-        /*if (button?.matches?.("ui-longtext button") && input?.contains?.(button)) {
-            ev?.preventDefault?.();
-            ev?.stopPropagation?.();
-
-            //
-            if (document.activeElement == button) { input?.restoreFocus?.(); };
-            if (ev?.type == "click") {
-                doButtonAction(button, document.activeElement as HTMLInputElement);
-            }
-        }*/
-    }
-
-    //
-    ROOT?.addEventListener?.("click", whenClick, {capture: true});
-    ROOT?.addEventListener?.("pointerdown", whenClick, {capture: true});
-
-    //
     customElements.define("ui-longtext", UILongTextElement);
 };
