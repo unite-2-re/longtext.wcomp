@@ -102,6 +102,7 @@ export const makeInput = (host?: HTMLElement, ROOT = document.documentElement)=>
     {
         const bar = host?.shadowRoot?.querySelector?.(".u2-scroll-box");
         const box = host?.shadowRoot?.querySelector?.(".u2-input-box") as HTMLElement;
+        const scr_w = new WeakRef(box);
         const scrollPos = scp;
 
         //
@@ -109,6 +110,21 @@ export const makeInput = (host?: HTMLElement, ROOT = document.documentElement)=>
             scrollPos[0] = box?.scrollLeft || 0;
             scrollPos[1] = box?.scrollTop  || 0;
         }
+
+        //
+        document.addEventListener("wheel", (ev)=>{
+            const scrollable = scr_w?.deref?.();
+            if (scrollable?.matches?.(":where(:hover, :active)")) {
+                ev.preventDefault();
+                ev.stopPropagation();
+                {   //
+                    scrollable?.scrollBy?.({
+                        left: ((ev?.deltaY || 0)+(ev?.deltaX || 0)), top: 0,
+                        behavior: "smooth"
+                    });
+                }
+            }
+        }, {passive: false});
 
         //
         new ScrollBar({
