@@ -448,7 +448,7 @@
                 //
                 @supports(timeline-scope: --tm-x, --tm-y)
                 {
-                    //--scroll-left: calc(var(--percent-x, 0) * max(calc(var(--scroll-size, 1) - tan(atan2(var(--size-base, 1px), 1px))), 0));
+                    --scroll-left: calc(var(--percent-x, 0) * max(calc(var(--scroll-size, 1) - tan(atan2(var(--size-base, 1px), 1px))), 0));
                 };
             }
         }
