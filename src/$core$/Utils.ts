@@ -1,8 +1,5 @@
-//
-//import Scrollable from "./Scrollable";
-
 // @ts-ignore
-import { ScrollBar } from "/externals/lib/agate.js";
+import { ScrollBar } from "/externals/core/agate.js";
 
 // @ts-ignore
 import styles from "./LongText.scss?inline&compress";
