@@ -81,8 +81,6 @@
     :host
     {
         & {
-            --size-coef-x: clamp(0, calc(var(--offset-width)  / var(--scroll-width) ), 1);
-            --size-coef-y: clamp(0, calc(var(--offset-height) / var(--scroll-height)), 1);
             --scrollbar-color: #10101040;
             --percent-x: 0.0;
             --percent-y: 0.0;
@@ -109,6 +107,7 @@
             box-sizing: border-box;
 
             //
+            container-type: inline-size !important;
             place-content: center;
             place-items: center;
             overflow: hidden;
@@ -117,10 +116,10 @@
             display: inline grid;
             grid-template-columns:
                 [input] minmax(0px, 1fr)
-                [button] minmax(0px, max-content);
+                [button] minmax(0px, max-content) !important;
             grid-template-rows:
                 [input] minmax(0px, 1fr)
-                [scroll] minmax(0px, 0.5rem);
+                [scroll] minmax(0px, 0.5rem) !important;
 
             //
             overflow-anchor: auto;
@@ -268,7 +267,7 @@
                 contain: content;
 
                 //
-                container-type: inline-size;
+                container-type: inline-size !important;
 
                 //
                 block-size: 100%;
@@ -382,9 +381,9 @@
         //
         .u2-scroll-box {
             & {
-                --size-base  : 100cqi;
-                --size-coef  : calc(tan(atan2(var(--size-base, 1px), 1px)) / var(--scroll-size, 1));
-                --scroll-coef: calc((tan(atan2(var(--size-base, 1px), 1px)) - 16) / var(--scroll-size, 1));
+                --size-base: 100cqi;
+                --size-coef: calc(tan(atan2(var(--size-base, 1px), 1px)) / var(--scroll-size, 1));
+                --scroll-coef: calc(tan(atan2(var(--size-base, 1px), 1px)) / var(--scroll-size, 1));
             };
 
             //
@@ -410,6 +409,10 @@
                 place-content: center start;
                 place-items: center start;
                 inset: 0px;
+
+                //
+                visibility: visible;
+                z-index: 99;
             };
 
             //
@@ -429,8 +432,9 @@
                     cursor: pointer;
 
                     //
-                    inline-size: calc(100% * var(--size-coef-x));
                     block-size: 100%;
+                    inline-size: min(calc(100% * var(--scroll-coef, 1)), 100%);
+                    translate: calc(var(--scroll-left, 0) * var(--scroll-coef, 1) * 1px) 0px;
 
                     //
                     background-color: #10101040;
@@ -444,24 +448,9 @@
                 //
                 @supports(timeline-scope: --tm-x, --tm-y)
                 {
-                    --scroll-left: calc(var(--percent-x, 0) * max(calc(var(--scroll-size, 1) - tan(atan2(var(--size-base, 1px), 1px))), 0));
-                };
-
-                //
-                & {
-                    block-size: 100%;
-                    inline-size: min(calc(100% * var(--size-coef, 1)), 100%);
-                    translate: calc(var(--scroll-left, 0) * var(--scroll-coef, 1) * 1px) 0px;
+                    //--scroll-left: calc(var(--percent-x, 0) * max(calc(var(--scroll-size, 1) - tan(atan2(var(--size-base, 1px), 1px))), 0));
                 };
             }
-        }
-
-        //
-        :where(.u2-scroll-box, .u2-scroll-bar).hidden
-        {
-            display: none;
-            visibility: collapse;
-            opacity: 0;
         }
     }
 
