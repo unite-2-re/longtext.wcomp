@@ -8,7 +8,7 @@ import html from "./LongText.html?raw";
 const preInit = URL.createObjectURL(new Blob([styles], {type: "text/css"}));
 export class UILongTextElement extends HTMLElement {
     //#input?: HTMLInputElement | null;
-    #selectionRange: [number, number] = [0, 0];
+    #selectionRange?: [number, number] | null;
 
     //
     get #input(): HTMLInputElement|null { return this.querySelector("input"); };
@@ -44,10 +44,6 @@ export class UILongTextElement extends HTMLElement {
             shadowRoot.appendChild(style);
 
             //
-            //const next = this.querySelector("input");
-            //this.#input = exists ?? next;
-
-            //
             this?.addEventListener?.("change", (ev)=>{
                 const input = ev.target as HTMLInputElement;
                 if (!CSS.supports("field-sizing", "content") && input?.matches?.("input")) {
@@ -61,6 +57,11 @@ export class UILongTextElement extends HTMLElement {
                 if (!CSS.supports("field-sizing", "content") && input?.matches?.("input")) {
                     input?.style?.setProperty?.("inline-size", (input?.value||"").length + "ch");
                 }
+            });
+
+            //
+            this?.addEventListener?.("focusout", (ev)=>{
+                setTimeout(()=>{if (document.activeElement != this.#input) { this.#selectionRange = null; }}, 100);
             });
 
             //
@@ -86,8 +87,10 @@ export class UILongTextElement extends HTMLElement {
     //
     restoreFocus() {
         if (document.activeElement != this.#input) {
-            this.#input?.setSelectionRange?.(...(this.#selectionRange || [0, 0]));
             this.#input?.focus?.();
+            if (this.#selectionRange != null) {
+                this.#input?.setSelectionRange?.(...this.#selectionRange);
+            }
         }
     }
 }

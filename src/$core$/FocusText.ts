@@ -11,7 +11,7 @@ const preInit = URL.createObjectURL(new Blob([styles], {type: "text/css"}));
 export class UIFocusTextElement extends HTMLElement {
     //#input?: HTMLInputElement | null;
     #focus?: HTMLInputElement | null;
-    #selectionRange: [number, number] = [0, 0];
+    #selectionRange?: [number, number] | null = null;
 
     //
     get #input(): HTMLInputElement|null { return this.querySelector("input"); };
@@ -21,7 +21,6 @@ export class UIFocusTextElement extends HTMLElement {
     #initialize() {
         if (!this.#initialized) {
             this.#initialized = true;
-            this.#selectionRange = [0, 0];
 
             //
             const exists = this.querySelector("input");
@@ -88,21 +87,13 @@ export class UIFocusTextElement extends HTMLElement {
             this?.addEventListener?.("input", (ev)=>{ this.reflectInput(null, ev.type); });
             this?.addEventListener?.("focusout", (ev)=>{
                 if ((ev.target as HTMLInputElement)?.matches?.("input")) {
-                    this.#selectionRange[0] = (ev.target as HTMLInputElement)?.selectionStart || 0;
-                    this.#selectionRange[1] = (ev.target as HTMLInputElement)?.selectionEnd   || this.#selectionRange[0];
+                    this.#selectionRange = [
+                        Math.min((ev.target as HTMLInputElement)?.selectionStart || 0, (ev.target as HTMLInputElement)?.selectionEnd || 0),
+                        Math.max((ev.target as HTMLInputElement)?.selectionStart || 0, (ev.target as HTMLInputElement)?.selectionEnd || 0)
+                    ];
 
                     //
-                    //requestIdleCallback(()=>{
-                    setTimeout(()=>{
-                        this.#focus?.removeAttribute?.("disabled");
-                        if (document.activeElement != this.#input) {
-                            // @ts-ignore
-                            navigator?.virtualKeyboard?.hide?.();
-                            if (this.dataset.hidden == null) { this.#input?.blur?.(); this.dataset.hidden = ""; };
-                            this.#focus = null;
-                        }
-                    }, 100);
-                    //}, {timeout: 100});
+                    this.hideInput();
                 }
             });
 
@@ -150,7 +141,34 @@ export class UIFocusTextElement extends HTMLElement {
     }
 
     //
-    setVirtualFocus(where, onClick = false) {
+    hideInput() {
+        setTimeout(()=>{
+            this.#focus?.removeAttribute?.("disabled");
+            if (document.activeElement != this.#input) {
+                // @ts-ignore
+                navigator?.virtualKeyboard?.hide?.();
+                if (this.dataset.hidden == null) { this.#input?.blur?.(); this.dataset.hidden = ""; };
+                this.#focus = null, this.#selectionRange = null;
+            }
+        }, 100);
+    }
+
+    //
+    makeSelect(range: [number, number], scrollTo = false) {
+        if (range && Array.isArray(range)) { this.#input?.setSelectionRange?.(...range); };
+        if (scrollTo && this.#input) {
+            const sl  = measureInputInFocus(this.#input);
+            const box = this?.shadowRoot?.querySelector(".u2-input-box");
+            box?.scrollTo?.({
+                left: (sl?.width ?? box?.scrollLeft ?? 0) - 64,
+                top: box?.scrollTop ?? 0,
+                behavior: "smooth"
+            });
+        }
+    }
+
+    //
+    setVirtualFocus(where, onClick = false, pRange?: [number, number] | null) {
         //
         if (this.#focus) {
             this.#focus?.removeAttribute?.("disabled");
@@ -158,59 +176,36 @@ export class UIFocusTextElement extends HTMLElement {
         }
 
         //
-        if (this.#input && where != this.#input && where && where?.parentNode && (this.#focus = where)) {
-            const oldValue                = this.#input.value  || "";
-            const newVal                  = this.#focus?.value || "";
-            const range: [number, number] = [this.#focus?.selectionStart ?? this.#input?.selectionStart ?? 0, this.#focus?.selectionEnd ?? this.#input?.selectionEnd ?? 0];
-            const oldActive               = document.activeElement;
-
-            //
-            if (oldActive != this.#input) {
-                if (this.dataset.hidden != null) { delete this.dataset.hidden; };
-                requestIdleCallback(()=>{
-                    this.#input?.focus?.();
-                }, {timeout: 100});
-            };
-
-            //
-            if (this.#input && this.#focus) {
-                if (newVal != oldValue) { this.#input.value = newVal; };
-                if ((oldValue != newVal || onClick) && this.#input != this.#focus) {
-                    if (!(range[0] == range[1] && (!range[1] || ((range[0]||range[1]||0) >= (this.#focus.value.length-1))))) {
-                        this.#input?.setSelectionRange?.(...range);
-                    }
-                }
-            }
-
-            //
-            if (onClick) {
-                const sl  = measureInputInFocus(this.#input);
-                const box = this?.querySelector(".u2-input-box");
-                box?.scrollTo?.({
-                    left: (sl?.width ?? box?.scrollLeft ?? 0) - 64,
-                    top: box?.scrollTop ?? 0,
-                    behavior: "smooth"
-                });
-            }
-        }
+        if (where != this.#input) { this.#focus = where; };
+        const range: [number, number] = pRange ?? [this.#focus?.selectionStart ?? this.#input?.selectionStart ?? 0, this.#focus?.selectionEnd ?? this.#input?.selectionEnd ?? 0];
 
         //
-        setTimeout(()=>{
-            if (document.activeElement != this.#input /*|| !this.#focus*/) {
-                // @ts-ignore
-                navigator?.virtualKeyboard?.hide?.();
-                if (this.dataset.hidden == null) { this.#input?.blur?.(); this.dataset.hidden = ""; };
-                this.#focus = null;
-            }
-        }, 100);
+        if (this.#input && where != this.#input && this.#focus?.parentNode) {
+            delete this.dataset.hidden;
+            requestIdleCallback(() => {
+                if (document.activeElement != this.#input) { this.#input?.focus?.(); };
+
+                //
+                const oldValue = this.#input?.value || "";
+                const newVal   = this.#focus?.value || "";
+                if (this.#input && this.#focus) {
+                    if (newVal != oldValue) { this.#input.value = newVal; };
+                    if ((oldValue != newVal || onClick) && this.#input != this.#focus) {
+                        if (range) { this.makeSelect(range, onClick); };
+                    }
+                }
+            }, {timeout: 100});
+        }
     }
 
     //
     restoreFocus() {
         if (this.#focus && document.activeElement != this.#input && this.dataset.hidden == null) {
             this.#input?.removeAttribute?.("disabled");
-            this.#input?.setSelectionRange?.(...(this.#selectionRange || [0, 0]));
             this.#input?.focus?.();
+            if (this.#selectionRange != null) {
+                this.makeSelect(this.#selectionRange, true);
+            }
         }
     }
 }
@@ -246,14 +241,11 @@ export const makeFocusable = (ROOT = document.documentElement)=>{
 
                 //
                 if (["click", "pointerdown", "focus", "focusin"].indexOf(ev?.type || "") >= 0) {
-                    if (ev && ev?.type == "pointerdown" && dInput) {
-                        const cps = computeCaretPositionFromClient(element, [ev?.clientX / zoomOf(), ev?.clientY / zoomOf()]);
-                        dInput?.setSelectionRange(cps, cps);
-                    }
-
                     //
                     if (["click", "focus", "focusin"].indexOf(ev?.type || "") >= 0) {
-                        dedicated?.setVirtualFocus?.(element, ev.type == "click" || ev.type == "pointerdown");
+                        const cps = computeCaretPositionFromClient(element, [ev?.clientX / zoomOf(), ev?.clientY / zoomOf()]);
+                        const pRange: [number, number] | null = ((ev && ev?.type == "click" && dInput) ? [cps, cps] : null) as ([number, number] | null);
+                        dedicated?.setVirtualFocus?.(element, ev.type == "click" || ev.type == "pointerdown", pRange);
                     }
                 }
 
@@ -265,17 +257,8 @@ export const makeFocusable = (ROOT = document.documentElement)=>{
     };
 
     //
-    const whenClick = (ev)=>{
-        //const button = ev.target as HTMLElement;
-        //const dedicated = (ROOT?.querySelector?.("ui-focustext") as UIFocusTextElement);
-
-        //
-        enforceFocus(ev);
-    }
-
-    //
-    ROOT?.addEventListener?.("click", whenClick);
-    ROOT?.addEventListener?.("pointerdown", whenClick);
+    ROOT?.addEventListener?.("click", enforceFocus);
+    ROOT?.addEventListener?.("pointerdown", enforceFocus);
     ROOT?.addEventListener?.("select", enforceFocus);
     ROOT?.addEventListener?.("selectionchange", enforceFocus);
     ROOT?.addEventListener?.("selectstart", enforceFocus);
