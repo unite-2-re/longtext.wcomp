@@ -34,8 +34,8 @@ export class UILongTextElement extends HTMLElement {
             const THEME_URL = "/externals/core/theme.js";
             import(/* @vite-ignore */ "" + `${THEME_URL}`).then((module)=>{
                 // @ts-ignore
-                this.#themeStyle = module?.default?.(this.shadowRoot);
-                if (this.#themeStyle) { this.shadowRoot?.appendChild?.(this.#themeStyle); }
+                this.#themeStyle = module?.default?.(shadowRoot);
+                if (this.#themeStyle) { shadowRoot?.appendChild?.(this.#themeStyle); }
             }).catch(console.warn.bind(console));
 
             //

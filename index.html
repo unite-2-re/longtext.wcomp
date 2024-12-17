@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="utf-8">
     <base href="./" />
@@ -33,17 +33,28 @@
         }
     </script>
 </head>
-<body>
+<body data-scheme="solid" data-alpha="1" data-chroma="0">
 
     <script src="./test/LTest.ts" type="module"></script>
 
+    <style>
+        body, html {
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+            padding: 0px;
+            margin: 0px;
+            inline-size: 100dvi;
+            block-size: 100dvb;
+            overflow: hidden;
+        }
+    </style>
+
     <!-- -->
-    <ui-longtext style="inline-size: 256px;">
+    <ui-longtext style="inline-size: 256px;" data-scheme="solid" data-alpha="1" data-chroma="0">
         <input label="test" placeholder="test-longtext" tabindex="0" draggable="false" autocomplete="on" class="u2-input" virtualkeyboardpolicy="manual" type="text" scroll="no"/>
     </ui-longtext>
 
     <!-- -->
-    <ui-focustext>
+    <ui-focustext data-scheme="solid" data-alpha="1" data-chroma="0">
         <input label="test" placeholder="test-longtext" tabindex="-1" draggable="false" autocomplete="on" class="u2-input" type="text" value="" scroll="no"/>
     </ui-focustext>
 

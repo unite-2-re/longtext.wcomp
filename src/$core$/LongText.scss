@@ -29,7 +29,7 @@
     @property --scrollbar-color {
         syntax: "<color>";
         inherits: true;
-        initial-value: #10101040;
+        initial-value: #10101060;
     };
 };
 
@@ -81,7 +81,7 @@
     :host
     {
         & {
-            --scrollbar-color: #10101040;
+            --scrollbar-color: var(--current-surface-color, #10101060);
             --percent-x: 0.0;
             --percent-y: 0.0;
         }
@@ -437,7 +437,7 @@
                     translate: calc(var(--scroll-left, 0) * var(--scroll-coef, 1) * 1px) 0px;
 
                     //
-                    background-color: #10101040;
+                    background-color: #10101060 !important;
 
                     //
                     user-select: none;

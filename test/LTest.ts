@@ -1,4 +1,7 @@
-import init from "../dist/longtext.js";
+import lg from "../dist/longtext.js"; lg();
 
-//
-init();
+// @ts-ignore
+import init from "/externals/lib/agate.js"; init?.();
+
+// @ts-ignore
+import theme from "/externals/core/theme.js"; theme?.();
