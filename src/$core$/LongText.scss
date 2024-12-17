@@ -81,7 +81,7 @@
     :host
     {
         & {
-            --scrollbar-color: var(--current-surface-color, #10101060);
+            --scrollbar-color: #10101060;
             --percent-x: 0.0;
             --percent-y: 0.0;
         }
@@ -437,7 +437,7 @@
                     translate: calc(var(--scroll-left, 0) * var(--scroll-coef, 1) * 1px) 0px;
 
                     //
-                    background-color: #10101060 !important;
+                    background-color: var(--scrollbar-color, #10101060) !important;
 
                     //
                     user-select: none;
