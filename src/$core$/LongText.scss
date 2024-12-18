@@ -403,6 +403,7 @@
                 user-select: none;
                 touch-action: none;
                 pointer-events: none;
+                mix-blend-mode: darken;
 
                 //
                 place-self: start start;
@@ -414,6 +415,10 @@
                 visibility: visible;
                 z-index: 99;
             };
+
+            //
+            @media (prefers-color-scheme: dark) { mix-blend-mode: lighten; };
+            @media (prefers-color-scheme: light) { mix-blend-mode: darken; };
 
             //
             .u2-scroll-bar {
@@ -443,7 +448,12 @@
                     user-select: none;
                     touch-action: none;
                     pointer-events: auto;
+                    mix-blend-mode: darken;
                 };
+
+                //
+                @media (prefers-color-scheme: dark) { mix-blend-mode: lighten; };
+                @media (prefers-color-scheme: light) { mix-blend-mode: darken; };
 
                 //
                 @supports(timeline-scope: --tm-x, --tm-y)
