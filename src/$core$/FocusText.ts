@@ -1,6 +1,6 @@
 //
 import { doButtonAction, makeInput, MOC, styles } from "./Utils";
-import { computeCaretPositionFromClient, measureInputInFocus } from "./Measure";
+import { computeCaretPositionFromClient, measureInputInFocus, measureText } from "./Measure";
 import { zoomOf } from "./Zoom";
 
 // @ts-ignore
@@ -21,13 +21,11 @@ export class UIFocusTextElement extends HTMLElement {
     #initialize() {
         if (!this.#initialized) {
             this.#initialized = true;
+            this.#focus = null;
 
             //
-            const exists = this.querySelector("input");
             const parser = new DOMParser();
             const dom = parser.parseFromString(html, "text/html");
-
-            //
             const shadowRoot = this.attachShadow({ mode: "open" });
             dom.querySelector("template")?.content?.childNodes.forEach(cp => {
                 shadowRoot.appendChild(cp.cloneNode(true));
@@ -47,23 +45,14 @@ export class UIFocusTextElement extends HTMLElement {
             shadowRoot.appendChild(style);
 
             //
-            //const next = this.querySelector("input");
-            //this.#input = exists ?? next;
-            this.#focus = null;
-
-            //
-            this?.addEventListener?.("change", (ev)=>{
-                const input = ev.target as HTMLInputElement;
-                if (!CSS.supports("field-sizing", "content") && input?.matches?.("input")) {
-                    input?.style?.setProperty("inline-size", (input?.value||"").length + "ch");
-                }
-            });
-
-            //
-            this?.addEventListener?.("input", (ev)=>{
-                const input = ev.target as HTMLInputElement;
-                if (!CSS.supports("field-sizing", "content") && input?.matches?.("input")) {
-                    input?.style?.setProperty("inline-size", (input?.value||"").length + "ch");
+            this?.hideInput?.(true);
+            this?.addEventListener?.("focusout", (ev)=>{
+                if ((ev.target as HTMLInputElement)?.matches?.("input")) {
+                    this.#selectionRange = [
+                        Math.min((ev.target as HTMLInputElement)?.selectionStart || 0, (ev.target as HTMLInputElement)?.selectionEnd || 0),
+                        Math.max((ev.target as HTMLInputElement)?.selectionStart || 0, (ev.target as HTMLInputElement)?.selectionEnd || 0)
+                    ];
+                    this.hideInput();
                 }
             });
 
@@ -75,30 +64,16 @@ export class UIFocusTextElement extends HTMLElement {
             });
 
             //
-            if (!CSS.supports("field-sizing", "content")) {
-                this.#input?.style?.setProperty("inline-size", (this.#input?.value||"").length + "ch");
-            }
-
-            //
-            // @ts-ignore
-            navigator?.virtualKeyboard?.hide?.();
-            if (this.dataset.hidden == null) { this.#input?.blur?.(); this.dataset.hidden = ""; };
-            this?.addEventListener?.("change", (ev)=>{ this.reflectInput(null, ev.type); });
-            this?.addEventListener?.("input", (ev)=>{ this.reflectInput(null, ev.type); });
-            this?.addEventListener?.("focusout", (ev)=>{
-                if ((ev.target as HTMLInputElement)?.matches?.("input")) {
-                    this.#selectionRange = [
-                        Math.min((ev.target as HTMLInputElement)?.selectionStart || 0, (ev.target as HTMLInputElement)?.selectionEnd || 0),
-                        Math.max((ev.target as HTMLInputElement)?.selectionStart || 0, (ev.target as HTMLInputElement)?.selectionEnd || 0)
-                    ];
-
-                    //
-                    this.hideInput();
-                }
+            this?.addEventListener?.("change", (ev)=>{
+                this.#adaptiveInline(ev);
+                this.reflectInput(null, ev.type);
             });
 
             //
-            makeInput(this);
+            this?.addEventListener?.("input", (ev)=>{
+                this.#adaptiveInline(ev);
+                this.reflectInput(null, ev.type);
+            });
 
             //
             this?.shadowRoot?.addEventListener("click", (ev)=>{
@@ -112,21 +87,27 @@ export class UIFocusTextElement extends HTMLElement {
                     if (ev.type == "click") { doButtonAction(button, (document.activeElement as HTMLInputElement) || this.#input); }
                 }
             });
+
+            //
+            this.#adaptiveInline();
+            makeInput(this);
+        }
+    }
+
+    //
+    #adaptiveInline(ev?) {
+        const input = (ev?.target || this.#input) as HTMLInputElement;
+        if (!CSS.supports("field-sizing", "content") && input?.matches?.("input")) {
+            const measure = measureText(input?.value||"", input)?.width;
+            input?.style?.setProperty("inline-size", measure != null ? ((measure||0) + "px") : (((input?.value||"")?.length || 0) + "ch"));
         }
     }
 
     //
     connectedCallback() {
         this.#initialize();
-        // @ts-ignore
-        navigator?.virtualKeyboard?.hide?.();
-        if (this.dataset.hidden == null) { this.#input?.blur?.(); this.dataset.hidden = ""; };
-        //this.style.setProperty("display", "none", "important");
-
-        //
-        if (!CSS.supports("field-sizing", "content")) {
-            this.#input?.style?.setProperty("inline-size", (this.#input?.value||"").length + "ch");
-        }
+        this.#adaptiveInline();
+        this.hideInput(true);
     }
 
     //
@@ -141,13 +122,20 @@ export class UIFocusTextElement extends HTMLElement {
     }
 
     //
-    hideInput() {
+    hideInput(forceHide = false) {
+        if (forceHide && document.activeElement == this.#input) {
+            // @ts-ignore
+            navigator?.virtualKeyboard?.hide?.();
+            this.#input?.blur?.();
+        };
+
+        //
         setTimeout(()=>{
             this.#focus?.removeAttribute?.("disabled");
-            if (document.activeElement != this.#input) {
+            if (document.activeElement != this.#input){
                 // @ts-ignore
                 navigator?.virtualKeyboard?.hide?.();
-                if (this.dataset.hidden == null) { this.#input?.blur?.(); this.dataset.hidden = ""; };
+                if (this.dataset.hidden == null) { this.dataset.hidden = ""; };
                 this.#focus = null, this.#selectionRange = null;
             }
         }, 100);

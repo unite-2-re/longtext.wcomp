@@ -3,6 +3,7 @@ import { doButtonAction, makeInput, styles } from "./Utils";
 
 // @ts-ignore
 import html from "./LongText.html?raw";
+import { measureText } from "./Measure.js";
 
 //
 const preInit = URL.createObjectURL(new Blob([styles], {type: "text/css"}));
@@ -20,11 +21,8 @@ export class UILongTextElement extends HTMLElement {
             this.#initialized = true;
 
             //
-            const exists = this.querySelector("input");
             const parser = new DOMParser();
             const dom = parser.parseFromString(html, "text/html");
-
-            //
             const shadowRoot = this.attachShadow({ mode: "open" });
             dom.querySelector("template")?.content?.childNodes.forEach(cp => {
                 shadowRoot.appendChild(cp.cloneNode(true));
@@ -44,44 +42,31 @@ export class UILongTextElement extends HTMLElement {
             shadowRoot.appendChild(style);
 
             //
-            this?.addEventListener?.("change", (ev)=>{
-                const input = ev.target as HTMLInputElement;
-                if (!CSS.supports("field-sizing", "content") && input?.matches?.("input")) {
-                    input?.style?.setProperty?.("inline-size", (input?.value||"").length + "ch");
-                }
-            });
-
-            //
-            this?.addEventListener?.("input", (ev)=>{
-                const input = ev.target as HTMLInputElement;
-                if (!CSS.supports("field-sizing", "content") && input?.matches?.("input")) {
-                    input?.style?.setProperty?.("inline-size", (input?.value||"").length + "ch");
-                }
-            });
-
-            //
+            this?.addEventListener?.("change", (ev)=>this.#adaptiveInline(ev));
+            this?.addEventListener?.("input", (ev)=>this.#adaptiveInline(ev));
             this?.addEventListener?.("focusout", (ev)=>{
                 setTimeout(()=>{if (document.activeElement != this.#input) { this.#selectionRange = null; }}, 100);
             });
 
             //
-            if (!CSS.supports("field-sizing", "content")) {
-                this.#input?.style?.setProperty?.("inline-size", (this.#input?.value||"").length + "ch");
-            }
-
-            //
+            this.#adaptiveInline();
             makeInput(this);
+        }
+    }
+
+    //
+    #adaptiveInline(ev?) {
+        const input = (ev?.target || this.#input) as HTMLInputElement;
+        if (!CSS.supports("field-sizing", "content") && input?.matches?.("input")) {
+            const measure = measureText(input?.value||"", input)?.width;
+            input?.style?.setProperty("inline-size", measure != null ? ((measure||0) + "px") : (((input?.value||"")?.length || 0) + "ch"));
         }
     }
 
     //
     connectedCallback() {
         this.#initialize();
-
-        //
-        if (!CSS.supports("field-sizing", "content")) {
-            this.#input?.style?.setProperty("inline-size", (this.#input?.value||"").length + "ch");
-        }
+        this.#adaptiveInline();
     }
 
     //
