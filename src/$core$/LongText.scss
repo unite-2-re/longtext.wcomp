@@ -4,21 +4,11 @@
 {
     //
     @property --scroll-left   { initial-value: 0; syntax: "<number>"; inherits: true; };
-    @property --scroll-top    { initial-value: 0; syntax: "<number>"; inherits: true; };
-    @property --scroll-width  { initial-value: 0; syntax: "<number>"; inherits: true; };
-    @property --scroll-height { initial-value: 0; syntax: "<number>"; inherits: true; };
+    @property --scroll-coef   { initial-value: 0; syntax: "<number>"; inherits: true; };
     @property --scroll-size   { initial-value: 1; syntax: "<number>"; inherits: true; };
-    @property --scroll-base   { initial-value: 1; syntax: "<number>"; inherits: true; };
-    @property --scroll-coef   { initial-value: 1px; syntax: "<length-percentage>"; inherits: true; };
+    @property --content-size  { initial-value: 1; syntax: "<number>"; inherits: true; };
 
     //
-    @property --offset-width  { initial-value: 0; syntax: "<number>"; inherits: true; };
-    @property --offset-height { initial-value: 0; syntax: "<number>"; inherits: true; };
-
-    //
-    @property --size-coef-x { initial-value: 0; syntax: "<number>"; inherits: true; };
-    @property --size-coef-y { initial-value: 0; syntax: "<number>"; inherits: true; };
-    @property --size-coef { initial-value: 1; syntax: "<number>"; inherits: true; };
     @property --size-base { initial-value: 1px; syntax: "<length-percentage>"; inherits: true; };
 
     //
@@ -380,13 +370,7 @@
 
         //
         .u2-scroll-box {
-            & {
-                --size-base: 100cqi;
-                --size-coef: calc(tan(atan2(var(--size-base, 1px), 1px)) / var(--scroll-size, 1));
-                --scroll-coef: calc(tan(atan2(var(--size-base, 1px), 1px)) / var(--scroll-size, 1));
-            };
-
-            //
+            & { --scroll-coef: 0; };
             & {
                 transform: none;
                 container-type: size;
@@ -438,8 +422,8 @@
 
                     //
                     block-size: 100%;
-                    inline-size: min(calc(100% * var(--scroll-coef, 1)), 100%);
-                    translate: calc(var(--scroll-left, 0) * var(--scroll-coef, 1) * 1px) 0px;
+                    inline-size: min(calc(100% * var(--scroll-coef, 0)), 100%);
+                    translate: calc(var(--scroll-left, 0) * var(--scroll-coef, 0) * 1px) 0px;
 
                     //
                     background-color: var(--scrollbar-color, #10101060) !important;
@@ -458,7 +442,7 @@
                 //
                 @supports(timeline-scope: --tm-x, --tm-y)
                 {
-                    --scroll-left: calc(var(--percent-x, 0) * max(calc(var(--scroll-size, 1) - tan(atan2(var(--size-base, 1px), 1px))), 0));
+                    --scroll-left: calc(var(--percent-x, 0) * max(calc(var(--scroll-size, 1) - var(--content-size, 1)), 0));
                 };
             }
         }
