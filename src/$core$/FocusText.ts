@@ -60,7 +60,7 @@ export class UIFocusTextElement extends HTMLElement {
             this?.addEventListener?.("focusin", (ev)=>{
                 requestIdleCallback(()=>{
                     this.#focus?.setAttribute?.("disabled", "");
-                }, {timeout: 1000});
+                }, {timeout: 100});
             });
 
             //
