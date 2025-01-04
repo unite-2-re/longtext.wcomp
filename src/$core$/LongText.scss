@@ -531,19 +531,25 @@
     :host(ui-focustext)
     {
         & {
-            position: fixed;
             z-index : 9999999;
-            inset   : auto;
-            inset-block-end: 0px;
-            inset-inline-start: 0px;
+            position: absolute !important;
+            inset   : auto !important;
+            inset-block-end: 0px !important;
+            inset-inline-start: 0px !important;
             inline-size: 100%;
             max-inline-size: 100%;
             overflow-anchor: none;
-            box-shadow: 0px 0px 1rem 1px #00000070;
+            min-block-size: 3rem;
+            block-size: 3rem;
+            transform: none !important;
+            translate: 0px 0px !important;
+            scale: 1 !important;
+            rotate: 0deg !important;
+            //box-shadow: 0px 0px 1rem 1px #00000070;
         }
 
         //
-        & { inset-block-end: calc(min(env(keyboard-inset-bottom, 0px), env(keyboard-inset-height, 0px)) / var(--zoom, 1)); }
+        & { inset-block-end: min(max(calc(min(env(safe-area-inset-bottom, 0rem) + env(keyboard-inset-bottom, 0px), env(keyboard-inset-height, 0px)) / var(--zoom, 1)), 0px), calc(100cqb - 3rem)) !important; }
 
         //
         ::slotted(input)
