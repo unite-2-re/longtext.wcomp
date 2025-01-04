@@ -532,7 +532,7 @@
     {
         & {
             z-index : 9999999;
-            position: absolute !important;
+            position: fixed !important;
             inset   : auto !important;
             inset-block-end: 0px !important;
             inset-inline-start: 0px !important;
