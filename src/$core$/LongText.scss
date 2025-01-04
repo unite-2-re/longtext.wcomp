@@ -185,7 +185,8 @@
         }
 
         //
-        ::slotted(input[inert]) {
+        ::slotted(input[inert])
+        {
             pointer-events: none !important;
             touch-action: none !important;
             user-select: none !important;
@@ -193,17 +194,18 @@
 
         //
         ::slotted(input)
-        {
+        {   //
             &[inert] {
                 pointer-events: none !important;
                 touch-action: none !important;
                 user-select: none !important;
             }
 
+            //
             & {
                 inset: 0px;
                 user-select: auto;
-                overflow: hidden;
+                overflow: visible;
 
                 //
                 pointer-events: auto;
@@ -255,7 +257,8 @@
                 max-inline-size: none;
                 max-block-size: 100%;
                 min-block-size: 1ch;
-                touch-action: manipulation;
+                touch-action: pan-x;
+                //touch-action: manipulation;
                 box-sizing: border-box;
 
                 //
@@ -336,6 +339,7 @@
                 overflow-anchor: auto;
                 overflow-block: hidden;
                 overflow-inline: auto;
+                overscroll-behavior: none;
 
                 //
                 scrollbar-width: none !important;
