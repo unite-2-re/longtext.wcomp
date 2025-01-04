@@ -549,7 +549,17 @@
         }
 
         //
-        & { inset-block-end: min(max(calc(env(safe-area-inset-bottom, 0rem) + min(env(keyboard-inset-bottom, 0px), env(keyboard-inset-height, 0px))), 0px), calc(100cqb - 3rem)) !important; }
+        & { inset-block-end: max(calc(env(safe-area-inset-bottom, 0rem) + min(env(keyboard-inset-bottom, 0px), env(keyboard-inset-height, 0px))), 0px) !important; }
+
+        //
+        @media (display-mode: fullscreen) {
+            & { inset-block-end: max(calc(3rem + min(env(keyboard-inset-bottom, 0px), env(keyboard-inset-height, 0px))), 0px) !important; }
+        }
+
+        //
+        @at-root :fullscreen & {
+            & { inset-block-end: max(calc(3rem + min(env(keyboard-inset-bottom, 0px), env(keyboard-inset-height, 0px))), 0px) !important; }
+        }
 
         //
         ::slotted(input)
