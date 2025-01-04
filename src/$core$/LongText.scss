@@ -532,7 +532,7 @@
     {
         & {
             z-index : 9999999;
-            position: fixed !important;
+            position: absolute !important;
             inset   : auto !important;
             inset-block-end: 0px !important;
             inset-inline-start: 0px !important;
@@ -549,7 +549,7 @@
         }
 
         //
-        & { inset-block-end: max(calc(env(safe-area-inset-bottom, 0rem) + min(env(keyboard-inset-bottom, 0px), env(keyboard-inset-height, 0px))), 0px) !important; }
+        & { inset-block-end: max(min(env(keyboard-inset-bottom, 0px), env(keyboard-inset-height, 0px)), 0px) !important; }
 
         //
         @media (display-mode: fullscreen) {
