@@ -109,6 +109,10 @@
             overflow: hidden;
 
             //
+            justify-content: safe center;
+            justify-items: safe center;
+
+            //
             display: inline grid;
             grid-template-columns:
                 [input] minmax(0px, 1fr)
@@ -220,6 +224,7 @@
                 //
                 text-align: start;
                 justify-items: start;
+                justify-content: safe center;
 
                 //
                 stroke: currentColor;
