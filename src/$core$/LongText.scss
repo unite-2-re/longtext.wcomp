@@ -77,10 +77,16 @@
         }
 
         //
-        & {
-            transform: none;
-            translate: 0px 0px;
-            scale: 1;
+        & { // not implemented
+            transform: none !important;
+            translate: 0px 0px !important;
+            scale: 1 !important;
+            rotate: 0deg !important;
+            perspective: none !important;
+
+            // not implemented
+            writing-mode: horizontal-tb !important;
+            direction: ltr !important;
         }
 
         //
@@ -145,9 +151,55 @@
             touch-action: none;
         }
 
+        // all slotted will be force hidden, except inputs
+        ::slotted(*:not(input:first-of-type))
+        {
+            font-size: 0px !important;
+            line-height: 0 !important;
+            display: none !important;
+            inline-size: 0px !important;
+            block-size: 0px !important;
+            max-inline-size: 0px !important;
+            max-block-size: 0px !important;
+            visibility: hidden !important;
+            pointer-events: none !important;
+            touch-action: none !important;
+            user-select: none !important;
+            opacity: 0 !important;
+            position: absolute !important;
+            inset: auto !important;
+            z-index: -1 !important;
+            background: transparent !important;
+            background-color: transparent !important;
+            color: transparent !important;
+            border: none 0px transparent !important;
+            outline: none 0px transparent !important;
+            padding: 0px !important;
+            margin: 0px !important;
+            box-sizing: border-box !important;
+            transform: none !important;
+            translate: 0px 0px !important;
+            scale: 1 !important;
+            rotate: 0deg !important;
+            perspective: none !important;
+        }
+
+        //
+        ::slotted(input[inert]) {
+            pointer-events: none !important;
+            touch-action: none !important;
+            user-select: none !important;
+        }
+
         //
         ::slotted(input)
         {
+            &[inert] {
+                pointer-events: none !important;
+                touch-action: none !important;
+                user-select: none !important;
+            }
+
             & {
                 inset: 0px;
                 user-select: auto;
@@ -225,6 +277,16 @@
                 // IMPORTANT!
                 field-sizing: content;
                 user-drag: none;
+
+                // not implemented
+                transform: none !important;
+                translate: 0px 0px !important;
+                scale: 1 !important;
+                rotate: 0deg !important;
+
+                // not implemented
+                writing-mode: horizontal-tb !important;
+                direction: ltr !important;
             }
 
             //
@@ -398,6 +460,10 @@
                 //
                 visibility: visible;
                 z-index: 99;
+
+                //
+                writing-mode: horizontal-tb !important;
+                direction: ltr !important;
             };
 
             //
@@ -433,6 +499,10 @@
                     touch-action: none;
                     pointer-events: auto;
                     mix-blend-mode: darken;
+
+                    //
+                    writing-mode: horizontal-tb !important;
+                    direction: ltr !important;
                 };
 
                 //
