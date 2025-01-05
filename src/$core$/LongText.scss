@@ -207,6 +207,9 @@
 
             //
             & {
+                --tm-bg-alpha: 0;
+
+                //
                 inset: 0px;
                 user-select: auto;
                 overflow: visible;
@@ -258,7 +261,7 @@
 
                 //
                 display: inline flex;
-                background-color: transparent;
+                background-color: transparent !important;
                 min-block-size: max(100%, 1ch);
                 block-size: max-content;
                 min-inline-size: 100%;
@@ -403,17 +406,28 @@
         //
         .u2-button-box {
             & {
+                --tm-bg-alpha: 0;
+
+                display: flex;
+                border-radius: 0.5rem;
                 grid-column: button;
                 grid-row: 1 / 2 span;
+                flex-direction: row;
+
+                place-content: center;
+                place-items: center;
 
                 block-size: 100%;
-                inline-size: max(100%, 8rem);
-                min-inline-size: max-content;
+                inline-size: max-content;
+                min-inline-size: max-content;//max(96%, 24rem);
+                background-color: transparent !important;
+                padding: 0px;
 
                 user-select: none;
                 touch-action: none;
                 pointer-events: none;
                 overflow: hidden;
+                gap: 0px;
 
                 //
                 inset: 0px;
@@ -422,7 +436,15 @@
 
             //
             button {
+                --tm-bg-alpha: 0;
+
                 //
+                display: inline flex;
+                place-content: center;
+                place-items: center;
+
+                //
+                background-color: transparent;
                 outline: none 0px transparent;
                 border: none 0px transparent;
                 margin: 0px;
@@ -431,6 +453,7 @@
                 aspect-ratio: 1 / 1;
                 inline-size: max-content;
                 block-size: 100%;
+                border-radius: 0rem;
 
                 //
                 cursor: pointer;
@@ -450,6 +473,7 @@
                 container-type: size;
                 contain: content;
                 position: relative;
+                background-color: transparent !important;
 
                 //
                 grid-column: 1 / 1 span;
@@ -534,6 +558,8 @@
     :host(ui-focustext)
     {
         & {
+            gap: 0.5rem;
+            overflow: hidden;
             z-index : 9999999;
             position: absolute !important;
             inset   : auto !important;
@@ -548,6 +574,9 @@
             translate: 0px 0px !important;
             scale: 1 !important;
             rotate: 0deg !important;
+            filter: drop-shadow(0px 0px 0.6rem #00000040) !important;
+            padding: 0.2rem;
+            padding-inline: 0.5rem;
             //box-shadow: 0px 0px 1rem 1px #00000070;
         }
 
@@ -562,6 +591,12 @@
         //
         @at-root :fullscreen & {
             & { inset-block-end: max(calc(3rem + env(safe-area-inset-bottom, 0px) + min(env(keyboard-inset-bottom, 0px), env(keyboard-inset-height, 0px))), 0px) !important; }
+        }
+
+        //
+        .u2-input-box {
+            overflow: hidden;
+            border-radius: 0.5rem;
         }
 
         //
