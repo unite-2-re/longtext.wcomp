@@ -210,6 +210,8 @@
                 inset: 0px;
                 user-select: auto;
                 overflow: visible;
+                padding: 0.4rem;
+                padding-inline: 0.6rem;
 
                 //
                 pointer-events: auto;
@@ -220,6 +222,7 @@
                 flex-direction: row;
                 place-content: center;
                 place-items: center;
+                place-self: center;
 
                 //
                 text-align: start;
@@ -323,7 +326,7 @@
 
                 //
                 display: block;
-                padding: 0.5rem;
+                padding: 0rem;
                 contain: content;
 
                 //
@@ -568,6 +571,8 @@
             overflow-anchor: none;
             user-select: auto;
             font-weight: bold;
+            padding: 0.8rem;
+            padding-inline: 1rem;
         }
 
         //
