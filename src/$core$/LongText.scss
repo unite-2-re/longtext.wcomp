@@ -92,6 +92,8 @@
         //
         & {
             inset: 0px;
+            padding: 0px !important;
+            border: none 0px transparent !important;
 
             //
             max-inline-size: 100%;
@@ -329,7 +331,7 @@
 
                 //
                 display: block;
-                padding: 0rem;
+                padding: 0px !important;
                 contain: content;
 
                 //
@@ -353,6 +355,7 @@
                 overscroll-behavior: none;
 
                 //
+                border: none 0px transparent !important;
                 scrollbar-width: none !important;
                 scrollbar-gutter: stable !important;
                 scroll-behavior: smooth;
@@ -494,7 +497,7 @@
                 inset: 0px;
 
                 //
-                visibility: visible;
+                visibility: collapse;
                 z-index: 99;
 
                 //
