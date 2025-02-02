@@ -1,7 +1,9 @@
 //
 import { doButtonAction, makeInput, MOC, styles } from "./Utils";
 import { computeCaretPositionFromClient, measureInputInFocus, measureText } from "./Measure";
-import { zoomOf } from "./Zoom";
+
+//
+import { zoomOf } from "/externals/core/agate.js";
 
 // @ts-ignore
 import html from "./FocusText.html?raw";

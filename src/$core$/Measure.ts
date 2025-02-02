@@ -1,4 +1,5 @@
-import { fixedClientZoom, unfixedClientZoom } from "./Zoom";
+//
+import { fixedClientZoom, unfixedClientZoom } from "/externals/core/agate.js";
 
 //
 const canvas = new OffscreenCanvas(1, 1);
