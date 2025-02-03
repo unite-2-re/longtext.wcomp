@@ -590,12 +590,12 @@
 
             //
             @media (display-mode: fullscreen) {
-                & { inset-block-end: max(calc(3rem + env(safe-area-inset-bottom, 0px) + min(env(keyboard-inset-bottom, 0px), env(keyboard-inset-height, 0px))), 0px) !important; }
+                & { inset-block-end: max(calc(0rem + env(safe-area-inset-bottom, 0px) + min(env(keyboard-inset-bottom, 0px), env(keyboard-inset-height, 0px))), 0px) !important; }
             }
 
             //
             @at-root :fullscreen & {
-                & { inset-block-end: max(calc(3rem + env(safe-area-inset-bottom, 0px) + min(env(keyboard-inset-bottom, 0px), env(keyboard-inset-height, 0px))), 0px) !important; }
+                & { inset-block-end: max(calc(0rem + env(safe-area-inset-bottom, 0px) + min(env(keyboard-inset-bottom, 0px), env(keyboard-inset-height, 0px))), 0px) !important; }
             }
 
             //
