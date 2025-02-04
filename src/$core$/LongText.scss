@@ -67,15 +67,26 @@
     }
 
     //
+    @media print {
+        :host { display: none !important; };
+    }
+
+    //
     @media screen {
 
         //
+        :host(:empty) { display: none !important; };
         :host
         {
             & {
                 --scrollbar-color: #10101060;
                 --percent-x: 0.0;
                 --percent-y: 0.0;
+            }
+
+            //
+            &:not(:has-slotted) {
+                display: none !important;
             }
 
             //
