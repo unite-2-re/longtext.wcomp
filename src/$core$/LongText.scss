@@ -24,13 +24,6 @@
 };
 
 //
-@keyframes by-scroll-x
-{
-    0%   { --percent-x: 0.0; }
-    100% { --percent-x: 1.0; }
-};
-
-//
 @keyframes scroll-side
 {
     0% {
@@ -153,7 +146,6 @@
 
                 //
                 user-drag: none;
-                timeline-scope: --tm-x;
             }
 
             //
@@ -336,10 +328,6 @@
                     z-index: 1;
 
                     //
-                    scroll-timeline-name: --tm-x;
-                    scroll-timeline-axis: inline;
-
-                    //
                     cursor: text;
 
                     //
@@ -405,17 +393,15 @@
                 { overflow-x: hidden !important; }
 
                 //
-                @supports (animation-timeline: scroll())
+                @supports (animation-timeline: scroll(inline))
                 {
-                    & {
-                        transition-behavior: allow-discrete;
-                        animation-name: scroll-side;
-                        animation-timeline: --tm-x;
-                        animation-range: contain;
-                        animation-fill-mode: both;
-                        animation-timing-function: linear;
-                        animation-duration: 1ms;
-                    }
+                    transition-behavior: allow-discrete;
+                    animation-name: scroll-side;
+                    animation-timeline: scroll(inline);
+                    animation-range: contain;
+                    animation-fill-mode: both;
+                    animation-timing-function: linear;
+                    animation-duration: 1ms;
                 }
             }
 
@@ -528,14 +514,6 @@
                         transform: none;
                         place-self: start start;
                         inset: 0px;
-
-                        //
-                        animation-name: by-scroll-x;
-                        animation-timing-function: linear;
-                        animation-fill-mode: both;
-                        animation-duration: 1ms;
-                        animation-range: contain;
-                        animation-timeline: --tm-x;
                         cursor: pointer;
 
                         //
@@ -560,12 +538,6 @@
                     //
                     @media (prefers-color-scheme: dark) { mix-blend-mode: lighten; };
                     @media (prefers-color-scheme: light) { mix-blend-mode: darken; };
-
-                    //
-                    @supports(timeline-scope: --tm-x, --tm-y)
-                    {
-                        --scroll-left: calc(var(--percent-x, 0) * max(calc(var(--scroll-size, 1) - var(--content-size, 1)), 0));
-                    };
                 }
             }
         }
