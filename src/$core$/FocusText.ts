@@ -59,6 +59,11 @@ export class UIFocusTextElement extends HTMLElement {
             });
 
             //
+            this?.addEventListener?.("focusout", (ev)=>{
+                if (this.#input) this.#input.value = "";
+            });
+
+            //
             this?.addEventListener?.("focusin", (ev)=>{
                 requestIdleCallback(()=>{
                     this.#focus?.setAttribute?.("disabled", "");
@@ -179,7 +184,7 @@ export class UIFocusTextElement extends HTMLElement {
                 const oldValue = this.#input?.value || "";
                 const newVal   = this.#focus?.value || "";
                 if (this.#input && this.#focus) {
-                    if (newVal != oldValue) { this.#input.value = newVal; };
+                    if (newVal !== oldValue) { this.#input.value = newVal; };
                     if ((oldValue != newVal || onClick) && this.#input != this.#focus) {
                         if (range) { this.makeSelect(range, onClick); };
                     }
