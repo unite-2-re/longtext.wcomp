@@ -138,12 +138,20 @@ export class UIFocusTextElement extends HTMLElement {
 
         //
         setTimeout(()=>{
-            this.#focus?.removeAttribute?.("disabled");
-            if (document.activeElement != this.#input){
+            if (document.activeElement != this.#input) {
+                const focus = this.#focus; this.#focus = null;
+                focus?.removeAttribute?.("disabled");
+                focus?.dispatchEvent?.(new Event("change", {bubbles: true}));
+
                 // @ts-ignore
                 navigator?.virtualKeyboard?.hide?.();
-                if (this.dataset.hidden == null) { this.dataset.hidden = ""; };
-                this.#focus = null, this.#selectionRange = null;
+                if (this.dataset.hidden == null) {
+                    this.dataset.hidden = "";
+                    if (this.#input && !focus) {
+                        this.#input.value = "";
+                    };
+                };
+                this.#selectionRange = null;
             }
         }, 100);
     }
