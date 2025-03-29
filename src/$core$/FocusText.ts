@@ -49,6 +49,11 @@ export class UIFocusTextElement extends HTMLElement {
             //
             this?.hideInput?.(true);
             this?.addEventListener?.("focusout", (ev)=>{
+                requestAnimationFrame(()=>{
+                    if (!(this.shadowRoot?.querySelector?.(":focus") || document.activeElement == this || document.activeElement == this.#input)) {
+                        if (this.#input) this.#input.value = "";
+                    }
+                });
                 if ((ev.target as HTMLInputElement)?.matches?.("input")) {
                     this.#selectionRange = [
                         Math.min((ev.target as HTMLInputElement)?.selectionStart || 0, (ev.target as HTMLInputElement)?.selectionEnd || 0),
@@ -56,18 +61,6 @@ export class UIFocusTextElement extends HTMLElement {
                     ];
                     this.hideInput();
                 }
-            });
-
-            //
-            this?.addEventListener?.("focusout", (ev)=>{
-                if (this.#input) this.#input.value = "";
-            });
-
-            //
-            this?.addEventListener?.("focusin", (ev)=>{
-                //requestIdleCallback(()=>{
-                    //this.#focus?.setAttribute?.("disabled", "");
-                //}, {timeout: 100});
             });
 
             //
