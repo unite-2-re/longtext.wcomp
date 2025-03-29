@@ -75,6 +75,7 @@ export class UILongTextElement extends HTMLElement {
             this.#input?.focus?.();
             if (this.#selectionRange != null) {
                 this.#input?.setSelectionRange?.(...this.#selectionRange);
+                this.#selectionRange = null;
             }
         }
     }

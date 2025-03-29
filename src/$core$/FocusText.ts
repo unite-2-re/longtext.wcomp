@@ -65,9 +65,9 @@ export class UIFocusTextElement extends HTMLElement {
 
             //
             this?.addEventListener?.("focusin", (ev)=>{
-                requestIdleCallback(()=>{
-                    this.#focus?.setAttribute?.("disabled", "");
-                }, {timeout: 100});
+                //requestIdleCallback(()=>{
+                    //this.#focus?.setAttribute?.("disabled", "");
+                //}, {timeout: 100});
             });
 
             //
@@ -140,7 +140,7 @@ export class UIFocusTextElement extends HTMLElement {
         setTimeout(()=>{
             if (document.activeElement != this.#input) {
                 const focus = this.#focus; this.#focus = null;
-                focus?.removeAttribute?.("disabled");
+                //focus?.removeAttribute?.("disabled");
                 focus?.dispatchEvent?.(new Event("change", {bubbles: true}));
 
                 // @ts-ignore
@@ -174,7 +174,7 @@ export class UIFocusTextElement extends HTMLElement {
     setVirtualFocus(where, onClick = false, pRange?: [number, number] | null) {
         //
         if (this.#focus) {
-            this.#focus?.removeAttribute?.("disabled");
+            //this.#focus?.removeAttribute?.("disabled");
             this.#focus = null;
         }
 
@@ -204,7 +204,7 @@ export class UIFocusTextElement extends HTMLElement {
     //
     restoreFocus() {
         if (this.#focus && document.activeElement != this.#input && this.dataset.hidden == null) {
-            this.#input?.removeAttribute?.("disabled");
+            //this.#input?.removeAttribute?.("disabled");
             this.#input?.focus?.();
             if (this.#selectionRange != null) {
                 this.makeSelect(this.#selectionRange, true);

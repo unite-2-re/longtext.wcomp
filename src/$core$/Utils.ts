@@ -66,12 +66,48 @@ export const doButtonAction = (button, input: HTMLInputElement)=>{
     }
 }
 
+
+
+//
+export const holdFocus = (input)=>{
+    let pointerId = -1;
+    input.addEventListener("pointerdown", (ev)=>{
+        if (pointerId < 0) {
+            input?.setPointerCapture?.(pointerId = ev?.pointerId);
+        }
+    });
+
+    input.addEventListener("blur", (ev)=>{
+        if (pointerId >= 0) {
+            input?.focus?.();
+        }
+    });
+
+    document.addEventListener("pointerup", (ev)=>{
+        if (pointerId == ev?.pointerId) {
+            input?.releasePointerCapture?.(pointerId);
+            pointerId = -1;
+        }
+    });
+
+    document.addEventListener("pointercancel", (ev)=>{
+        if (pointerId == ev?.pointerId) {
+            input?.releasePointerCapture?.(pointerId);
+            pointerId = -1;
+        }
+    });
+}
+
+
 //
 export const makeInput = (host?: HTMLElement, ROOT = document.documentElement)=>{
     if (!host) return;
 
     //
     const input = host?.querySelector?.("input");
+    holdFocus(input);
+
+    //
     const weak  = new WeakRef(host);
     const scp   = [0, 0];
     const scp_w = new WeakRef(scp);
@@ -137,13 +173,13 @@ export const makeInput = (host?: HTMLElement, ROOT = document.documentElement)=>
     //
     let selection = false;
     const whenCancel = (ev)=>{
-        const box = weak?.deref?.()?.shadowRoot?.querySelector?.(".u2-input-box") as HTMLElement;
-        const scrollPos = scp_w?.deref?.();
-        if (selection) { box.scrollTo({
+        //const box = weak?.deref?.()?.shadowRoot?.querySelector?.(".u2-input-box") as HTMLElement;
+        //const scrollPos = scp_w?.deref?.();
+        /*if (selection) { box.scrollTo({
             left: scrollPos?.[0] || 0,
             top : scrollPos?.[1] || 0,
             behavior: "instant"
-        }); };
+        }); };*/
         selection = false;
     }
 
@@ -166,17 +202,16 @@ export const makeInput = (host?: HTMLElement, ROOT = document.documentElement)=>
     const preventScroll = ()=>{
         const box = weak?.deref?.()?.shadowRoot?.querySelector(".u2-input-box") as HTMLElement;
         const scrollPos = [box.scrollLeft, box.scrollTop];
-        if (selection) { box.scrollTo({
+        /*if (selection) { box.scrollTo({
             left: scrollPos[0],
             top: scrollPos[1],
             behavior: "instant"
-        }); };
+        }); };*/
     }
 
     //
     const toFocus = ()=>{
         if (document.activeElement != input) {
-            input?.removeAttribute?.("readonly");
             input?.focus?.();
         }
     };
