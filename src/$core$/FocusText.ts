@@ -1,9 +1,9 @@
 //
-import { doButtonAction, makeInput, MOC, styles } from "./Utils";
+import { doButtonAction, makeInput, MOC, styles, importCdn } from "./Utils";
 import { computeCaretPositionFromClient, measureInputInFocus, measureText } from "./Measure";
 
-//
-import { zoomOf } from "/externals/core/agate.js";
+// @ts-ignore
+const { zoomOf } = await Promise.try(importCdn, ["/externals/core/agate.js"]);
 
 // @ts-ignore
 import html from "./FocusText.html?raw";
@@ -34,8 +34,7 @@ export class UIFocusTextElement extends HTMLElement {
             });
 
             // @ts-ignore
-            const THEME_URL = "/externals/core/theme.js";
-            import(/* @vite-ignore */ "" + `${THEME_URL}`).then((module)=>{
+            Promise.try(importCdn, ["/externals/core/theme.js"])?.then?.((module)=>{
                 // @ts-ignore
                 this.#themeStyle = module?.default?.(shadowRoot);
                 if (this.#themeStyle) { shadowRoot?.appendChild?.(this.#themeStyle); }

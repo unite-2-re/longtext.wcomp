@@ -1,5 +1,9 @@
+// @ts-ignore /* @vite-ignore */
+import {importCdn} from "/externals/modules/cdnImport.mjs";
+export {importCdn};
+
 //
-import { fixedClientZoom, unfixedClientZoom } from "/externals/core/agate.js";
+const { unfixedClientZoom } = await Promise.try(importCdn, ["/externals/core/agate.js"]);
 
 //
 const canvas = new OffscreenCanvas(1, 1);

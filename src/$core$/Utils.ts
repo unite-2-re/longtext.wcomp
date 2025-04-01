@@ -1,5 +1,6 @@
-// @ts-ignore
-import { ScrollBar } from "/externals/core/agate.js";
+// @ts-ignore /* @vite-ignore */
+import {importCdn} from "/externals/modules/cdnImport.mjs";
+export {importCdn};
 
 // @ts-ignore
 import styles from "./LongText.scss?inline&compress";
@@ -163,11 +164,13 @@ export const makeInput = (host?: HTMLElement, ROOT = document.documentElement)=>
         }, {passive: false});
 
         //
-        new ScrollBar({
-            content: box,
-            holder: host,
-            scrollbar: bar
-        }, 0);
+        Promise.try(importCdn, ["/externals/core/agate.js"])?.then?.(({ScrollBar})=>{
+            new ScrollBar({
+                content: box,
+                holder: host,
+                scrollbar: bar
+            }, 0);
+        });
     }
 
     //
