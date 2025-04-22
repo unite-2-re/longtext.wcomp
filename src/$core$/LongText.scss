@@ -561,16 +561,16 @@
             }
 
             //
-            & { inset-block-end: max(max(env(keyboard-inset-bottom, 0px), env(keyboard-inset-height, 0px)), 0px) !important; }
+            & { inset-block-end: max(max(max(env(keyboard-inset-bottom, 0px), env(keyboard-inset-height, 0px)), 0px), max(calc(100dvb - var(--screen-height, 100dvb)), 0px)) !important; }
 
             //
             @media (display-mode: fullscreen) {
-                & { inset-block-end: max(max(env(keyboard-inset-bottom, 0px), env(keyboard-inset-height, 0px)), 0px) !important; }
+                & { inset-block-end: max(max(max(env(keyboard-inset-bottom, 0px), env(keyboard-inset-height, 0px)), 0px), max(calc(100dvb - var(--screen-height, 100dvb)), 0px)) !important; }
             }
 
             //
             @at-root :fullscreen & {
-                & { inset-block-end: max(max(env(keyboard-inset-bottom, 0px), env(keyboard-inset-height, 0px)), 0px) !important; }
+                & { inset-block-end: max(max(max(env(keyboard-inset-bottom, 0px), env(keyboard-inset-height, 0px)), 0px), max(calc(100dvb - var(--screen-height, 100dvb)), 0px)) !important; }
             }
 
             //

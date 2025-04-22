@@ -164,7 +164,7 @@ export const makeInput = (host?: HTMLElement, ROOT = document.documentElement)=>
         }, {passive: false});
 
         //
-        Promise.try(importCdn, ["/externals/core/agate.js"])?.then?.(({ScrollBar})=>{
+        Promise.try(importCdn, ["/externals/core/interact.js"])?.then?.(({ScrollBar})=>{
             new ScrollBar({
                 content: box,
                 holder: host,
